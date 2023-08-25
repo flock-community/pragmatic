@@ -13,6 +13,6 @@ object UserService {
 
     suspend fun UserContext.saveUser(user: User<Id.NonExisting>) = userAdapter.save(user)
 
-    suspend fun UserContext.deleteUserById(id:Int) = userAdapter.deleteById(id)
+    suspend fun UserContext.deleteUserById(id: Int) = userAdapter.deleteById(id)
 
 }

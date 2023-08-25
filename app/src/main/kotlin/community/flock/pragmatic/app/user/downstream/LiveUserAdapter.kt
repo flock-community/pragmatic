@@ -1,6 +1,7 @@
 package community.flock.pragmatic.app.user.downstream
 
 import community.flock.pragmatic.app.user.downstream.UserExternalizer.externalize
+import community.flock.pragmatic.domain.data.NotBlank
 import community.flock.pragmatic.domain.user.UserAdapter
 import community.flock.pragmatic.domain.user.model.User
 import community.flock.pragmatic.domain.user.model.User.Id
@@ -8,7 +9,7 @@ import community.flock.pragmatic.domain.user.model.User.Id
 class LiveUserAdapter : UserAdapter {
 
     private val userStore = mutableMapOf(
-        User(firstName = "First", lastName = "Last").externalize().let { it.id.value to it }
+        User(firstName = NotBlank("First")!!, lastName = NotBlank("Last")!!).externalize().let { it.id.value to it }
     )
 
     override suspend fun getAll(): List<User<Id.Valid>> = userStore.toList().map { (_, user) -> user }

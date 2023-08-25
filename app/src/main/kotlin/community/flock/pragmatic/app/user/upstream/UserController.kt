@@ -2,6 +2,7 @@ package community.flock.pragmatic.app.user.upstream
 
 import community.flock.pragmatic.api.common.apiBaseUrl
 import community.flock.pragmatic.api.user.UserApi
+import community.flock.pragmatic.app.user.downstream.LiveUserAdapter
 import community.flock.pragmatic.app.user.upstream.UserConsumer.consume
 import community.flock.pragmatic.app.user.upstream.UserProducer.produce
 import community.flock.pragmatic.domain.user.HasUserAdapter
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import community.flock.pragmatic.api.user.request.PotentialUserDto as PotentialUser
 
-interface Ctx : UserContext
+private interface Ctx : UserContext
 
 @RestController
 @RequestMapping(apiBaseUrl)
