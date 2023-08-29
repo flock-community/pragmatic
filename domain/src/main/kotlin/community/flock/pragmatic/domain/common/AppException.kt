@@ -8,7 +8,7 @@ sealed class AppException(override val message: String, cause: Throwable? = null
         override fun fillInStackTrace() = this
     }
 
-    sealed class UserException(message: String): BusinessException(message) {
+    sealed class UserException(message: String) : BusinessException(message) {
         class UserNotFoundException : UserException("User not found")
     }
 

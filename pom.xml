@@ -22,6 +22,7 @@
     </modules>
 
     <properties>
+        <arrow.version>1.2.0</arrow.version>
         <java.version>17</java.version>
         <kotlin.version>1.8.21</kotlin.version>
     </properties>
@@ -37,6 +38,11 @@
                 <groupId>community.flock.pragmatic</groupId>
                 <artifactId>api</artifactId>
                 <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.arrow-kt</groupId>
+                <artifactId>arrow-core-jvm</artifactId>
+                <version>${arrow.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

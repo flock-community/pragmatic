@@ -1,4 +1,4 @@
-package community.flock.pragmatic.domain.common
+package community.flock.pragmatic.app.common
 
 /**
  * Placeholder interface to define downstream converters.

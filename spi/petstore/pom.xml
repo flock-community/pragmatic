@@ -11,6 +11,10 @@
 
     <artifactId>petstore</artifactId>
 
+    <properties>
+        <petstore-api.version>1.0.6</petstore-api.version>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -18,7 +22,7 @@
                 <artifactId>openapi-generator-maven-plugin</artifactId>
                 <configuration>
                     <modelPackage>community.flock.pragmatic.spi.petstore.model</modelPackage>
-                    <inputSpec>${project.basedir}/src/main/resources/petstore.json</inputSpec>
+                    <inputSpec>${project.basedir}/src/main/resources/petstore-${petstore-api.version}.json</inputSpec>
                 </configuration>
             </plugin>
         </plugins>

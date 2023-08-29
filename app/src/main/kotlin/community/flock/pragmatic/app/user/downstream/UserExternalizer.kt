@@ -1,6 +1,6 @@
 package community.flock.pragmatic.app.user.downstream
 
-import community.flock.pragmatic.domain.common.Externalizer
+import community.flock.pragmatic.app.common.Externalizer
 import community.flock.pragmatic.domain.user.model.User
 import community.flock.pragmatic.domain.user.model.User.Id
 

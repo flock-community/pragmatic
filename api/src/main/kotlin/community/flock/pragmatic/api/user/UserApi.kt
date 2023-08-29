@@ -38,7 +38,7 @@ interface UserApi {
     @ApiResponses(
         ApiResponse(code = 200, message = "OK", response = UserDto::class)
     )
-    suspend fun postUser(user: PotentialUserDto): UserDto
+    suspend fun postUser(potentialUser: PotentialUserDto): UserDto
 
     @DELETE
     @Path("$path/{id}")
@@ -48,7 +48,7 @@ interface UserApi {
     suspend fun deleteUserById(@PathParam("id") id: String): UserDto?
 
     companion object {
-        const val path = "/user"
+        const val path = "/users"
     }
 
 }
