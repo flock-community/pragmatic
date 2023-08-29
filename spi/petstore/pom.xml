@@ -4,31 +4,16 @@
 
     <parent>
         <groupId>community.flock.pragmatic</groupId>
-        <artifactId>demo</artifactId>
+        <artifactId>spi</artifactId>
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>spi</artifactId>
-
-    <packaging>pom</packaging>
-
-    <modules>
-        <module>petstore</module>
-    </modules>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.kotlinx</groupId>
-            <artifactId>kotlinx-coroutines-reactor</artifactId>
-        </dependency>
-    </dependencies>
+    <artifactId>petstore</artifactId>
 
     <build>
+        <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
+        <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
