@@ -17,22 +17,76 @@
         <module>petstore</module>
     </modules>
 
+    <properties>
+        <openapi-generator.version>6.4.0</openapi-generator.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib</artifactId>
         </dependency>
+
+        <!-- JSON processing: jackson -->
         <dependency>
-            <groupId>org.jetbrains.kotlinx</groupId>
-            <artifactId>kotlinx-coroutines-reactor</artifactId>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
     </dependencies>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.openapitools</groupId>
+                    <artifactId>openapi-generator-maven-plugin</artifactId>
+                    <version>${openapi-generator.version}</version>
+                    <configuration>
+                        <generatorName>kotlin</generatorName>
+                        <library>jvm-ktor</library>
+                        <generateModelTests>false</generateModelTests>
+                        <generateModelDocumentation>false</generateModelDocumentation>
+                        <generateApis>false</generateApis>
+                        <supportingFilesToGenerate>JSON.java,RFC3339DateFormat.java</supportingFilesToGenerate>
+                        <configOptions>
+                            <dateLibrary>java8</dateLibrary>
+                            <serializationLibrary>jackson</serializationLibrary>
+                            <enumPropertyNaming>UPPERCASE</enumPropertyNaming>
+                        </configOptions>
+                        <typeMappings>
+                            <typeMapping>float=java.math.BigDecimal</typeMapping>
+                            <typeMapping>double=java.math.BigDecimal</typeMapping>
+                        </typeMappings>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>generate</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
+                <version>${kotlin.version}</version>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <phase>compile</phase>
+                        <configuration>
+                            <sourceDirs>
+                                <sourceDir>target/generated-sources/openapi/src/main/kotlin</sourceDir>
+                            </sourceDirs>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

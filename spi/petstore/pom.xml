@@ -12,12 +12,14 @@
     <artifactId>petstore</artifactId>
 
     <build>
-        <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
-        <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
         <plugins>
             <plugin>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-maven-plugin</artifactId>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <configuration>
+                    <modelPackage>community.flock.pragmatic.spi.petstore.model</modelPackage>
+                    <inputSpec>${project.basedir}/src/main/resources/petstore.json</inputSpec>
+                </configuration>
             </plugin>
         </plugins>
     </build>
