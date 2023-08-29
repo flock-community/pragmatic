@@ -2,6 +2,9 @@
 GET http://localhost:8080/api/users
 
 ###
+GET http://localhost:8080/api/users/-1795439281
+
+###
 POST http://localhost:8080/api/users
 Content-Type: application/json
 
@@ -9,3 +12,6 @@ Content-Type: application/json
   "firstName": "Luke",
   "lastName": "Skywalker"
 }
+
+###
+DELETE http://localhost:8080/api/users/-1795439281
