@@ -8,9 +8,7 @@ import community.flock.pragmatic.domain.user.model.FirstName
 import community.flock.pragmatic.domain.user.model.LastName
 import community.flock.pragmatic.domain.user.model.User
 import community.flock.pragmatic.domain.user.model.User.Id
-import org.springframework.stereotype.Component
 
-@Component
 class LiveUserAdapter : UserAdapter {
 
     private val firstName = FirstName("First Name")

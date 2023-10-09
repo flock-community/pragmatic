@@ -1,10 +1,12 @@
 package community.flock.pragmatic.app.common
 
 import community.flock.pragmatic.app.user.downstream.LiveUserAdapter
-import community.flock.pragmatic.domain.AppLayer
+import community.flock.pragmatic.app.user.upstream.UserControllerDependencies
 import org.springframework.stereotype.Component
 
+interface AppLayer : UserControllerDependencies
+
 @Component
-data class LiveLayer(
-    override val userAdapter: LiveUserAdapter
-) : AppLayer
+class LiveLayer : AppLayer {
+    override val userAdapter = LiveUserAdapter()
+}

@@ -27,33 +27,34 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-private interface Ctx : UserContext
+interface UserControllerDependencies : HasUserAdapter
+private interface Context : UserContext
 
 @RestController
 @RequestMapping(USERS_PATH)
-class UserController<ENV>(appLayer: ENV) : UserApi where ENV : HasUserAdapter {
+class UserController(appLayer: UserControllerDependencies) : UserApi {
 
-    private val ctx = object : Ctx {
+    private val context = object : Context {
         override val userAdapter = appLayer.userAdapter
     }
 
     @GetMapping
-    override suspend fun getUsers() = ctx.getUsers().map { it.produce() }
+    override suspend fun getUsers() = context.getUsers().map { it.produce() }
 
     @GetMapping(BY_ID_PATH)
     override suspend fun getUserById(@PathVariable id: String) = either {
-        ensureNotNull(ctx.getUserById(id.toInt())) { UserNotFoundException(id) }
+        ensureNotNull(context.getUserById(id.toInt())) { UserNotFoundException(id) }
     }.handle()
 
     @PostMapping
     override suspend fun postUser(@RequestBody potentialUser: PotentialUserDto) = either {
         val user = potentialUser.consume().bind()
-        ctx.saveUser(user)
+        context.saveUser(user)
     }.handle()
 
     @DeleteMapping(BY_ID_PATH)
     override suspend fun deleteUserById(@PathVariable("id") id: String) = either {
-        ensureNotNull(ctx.deleteUserById(id.toInt())) { UserNotFoundException(id) }
+        ensureNotNull(context.deleteUserById(id.toInt())) { UserNotFoundException(id) }
     }.handle()
 
     private fun Either<AppException, User<User.Id.Valid>>.handle() = map { it.produce() }.getOrElse { throw it }
