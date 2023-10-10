@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModelProperty
 
 data class UserDto(
     @ApiModelProperty(required = true)
-    val id: Int,
+    val id: String,
 
     @ApiModelProperty(required = true)
     val firstName: String,

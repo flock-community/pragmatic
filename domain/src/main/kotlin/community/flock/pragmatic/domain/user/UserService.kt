@@ -9,10 +9,9 @@ object UserService {
 
     suspend fun UserContext.getUsers() = userAdapter.getAll()
 
-    suspend fun UserContext.getUserById(id: Int) = userAdapter.getById(id)
+    suspend fun UserContext.getUserById(id: Id.Valid) = userAdapter.getById(id)
 
     suspend fun UserContext.saveUser(user: User<Id.NonExisting>) = userAdapter.save(user)
 
-    suspend fun UserContext.deleteUserById(id: Int) = userAdapter.deleteById(id)
-
+    suspend fun UserContext.deleteUserById(id: Id.Valid) = userAdapter.deleteById(id)
 }

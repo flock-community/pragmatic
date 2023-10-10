@@ -3,8 +3,9 @@ package community.flock.pragmatic.domain.user.model
 import arrow.core.raise.either
 import arrow.core.raise.ensure
 import community.flock.pragmatic.domain.data.Value
-import community.flock.pragmatic.domain.error.FirstNameValidationError
-import community.flock.pragmatic.domain.error.LastNameValidationError
+import community.flock.pragmatic.domain.error.FirstNameError
+import community.flock.pragmatic.domain.error.LastNameError
+import java.util.UUID
 
 data class User<T : User.Id>(
     val id: T,
@@ -13,7 +14,7 @@ data class User<T : User.Id>(
 ) {
     sealed interface Id {
         @JvmInline
-        value class Valid(override val value: Int) : Value<Int>, Id
+        value class Valid(override val value: UUID) : Value<UUID>, Id
         object NonExisting : Id
     }
 
@@ -30,7 +31,7 @@ data class User<T : User.Id>(
 value class FirstName private constructor(override val value: String) : Value<String> {
     companion object {
         operator fun invoke(s: String) = either {
-            ensure(s.isNotBlank()) { FirstNameValidationError.Empty }
+            ensure(s.isNotBlank()) { FirstNameError.Empty }
             FirstName(s.trim())
         }
     }
@@ -40,7 +41,7 @@ value class FirstName private constructor(override val value: String) : Value<St
 value class LastName private constructor(override val value: String) : Value<String> {
     companion object {
         operator fun invoke(s: String) = either {
-            ensure(s.isNotBlank()) { LastNameValidationError.Empty }
+            ensure(s.isNotBlank()) { LastNameError.Empty }
             LastName(s.trim())
         }
     }

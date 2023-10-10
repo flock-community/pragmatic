@@ -4,8 +4,8 @@ import arrow.core.Either
 import arrow.core.raise.either
 import arrow.core.raise.zipOrAccumulate
 import community.flock.pragmatic.api.user.request.PotentialUserDto
-import community.flock.pragmatic.app.common.AppException.ValidationException
 import community.flock.pragmatic.app.common.Consumer
+import community.flock.pragmatic.app.exceptions.ValidationException
 import community.flock.pragmatic.domain.user.model.FirstName
 import community.flock.pragmatic.domain.user.model.LastName
 import community.flock.pragmatic.domain.user.model.User

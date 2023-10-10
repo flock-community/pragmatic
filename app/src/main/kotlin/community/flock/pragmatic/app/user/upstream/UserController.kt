@@ -8,8 +8,9 @@ import community.flock.pragmatic.api.user.UserApi
 import community.flock.pragmatic.api.user.UserApi.Companion.BY_ID_PATH
 import community.flock.pragmatic.api.user.UserApi.Companion.USERS_PATH
 import community.flock.pragmatic.api.user.request.PotentialUserDto
-import community.flock.pragmatic.app.common.AppException
-import community.flock.pragmatic.app.common.AppException.UserException.UserNotFoundException
+import community.flock.pragmatic.app.common.mappers.UUIDConsumer.consume
+import community.flock.pragmatic.app.exceptions.AppException
+import community.flock.pragmatic.app.exceptions.UserNotFoundException
 import community.flock.pragmatic.app.user.upstream.UserConsumer.consume
 import community.flock.pragmatic.app.user.upstream.UserProducer.produce
 import community.flock.pragmatic.domain.user.HasUserAdapter
@@ -43,7 +44,8 @@ class UserController(appLayer: UserControllerDependencies) : UserApi {
 
     @GetMapping(BY_ID_PATH)
     override suspend fun getUserById(@PathVariable id: String) = either {
-        ensureNotNull(context.getUserById(id.toInt())) { UserNotFoundException(id) }
+        val uuid = id.consume().bind()
+        ensureNotNull(context.getUserById(User.Id.Valid(uuid))) { UserNotFoundException(id) }
     }.handle()
 
     @PostMapping
@@ -54,10 +56,9 @@ class UserController(appLayer: UserControllerDependencies) : UserApi {
 
     @DeleteMapping(BY_ID_PATH)
     override suspend fun deleteUserById(@PathVariable("id") id: String) = either {
-        ensureNotNull(context.deleteUserById(id.toInt())) { UserNotFoundException(id) }
+        val uuid = id.consume().bind()
+        ensureNotNull(context.deleteUserById(User.Id.Valid(uuid))) { UserNotFoundException(id) }
     }.handle()
 
     private fun Either<AppException, User<User.Id.Valid>>.handle() = map { it.produce() }.getOrElse { throw it }
-
-
 }

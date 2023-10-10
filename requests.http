@@ -2,7 +2,7 @@
 GET http://localhost:8080/api/users
 
 ###
-GET http://localhost:8080/api/users/-1795439281
+GET http://localhost:8080/api/users/{{userId}}
 
 ###
 POST http://localhost:8080/api/users
@@ -14,4 +14,4 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:8080/api/users/-1795439281
+DELETE http://localhost:8080/api/users/{{userId}}

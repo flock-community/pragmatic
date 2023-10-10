@@ -24,7 +24,10 @@
     <properties>
         <arrow.version>1.2.0</arrow.version>
         <java.version>17</java.version>
+        <kotest-arrow.version>1.4.0</kotest-arrow.version>
+        <kotest.version>5.7.2</kotest.version>
         <kotlin.version>1.8.21</kotlin.version>
+        <ktlint.version>0.42.0</ktlint.version>
     </properties>
 
     <dependencyManagement>
@@ -44,24 +47,110 @@
                 <artifactId>arrow-core-jvm</artifactId>
                 <version>${arrow.version}</version>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 
+    <dependencies>
+        <dependency>
+            <groupId>io.kotest.extensions</groupId>
+            <artifactId>kotest-assertions-arrow-jvm</artifactId>
+            <version>${kotest-arrow.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.kotest</groupId>
+            <artifactId>kotest-runner-junit5-jvm</artifactId>
+            <version>${kotest.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.kotest</groupId>
+            <artifactId>kotest-assertions-core-jvm</artifactId>
+            <version>${kotest.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.kotest</groupId>
+            <artifactId>kotest-property-jvm</artifactId>
+            <version>${kotest.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
     <build>
+        <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
+        <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.jetbrains.kotlin</groupId>
-                    <artifactId>kotlin-maven-plugin</artifactId>
-                    <configuration>
-                        <args>
-                            <arg>-Xjsr305=strict</arg>
-                        </args>
-                    </configuration>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>${maven-antrun-plugin.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.pinterest</groupId>
+                            <artifactId>ktlint</artifactId>
+                            <version>${ktlint.version}</version>
+                        </dependency>
+                        <!-- additional 3rd party ruleset(s) can be specified here -->
+                    </dependencies>
+                    <executions>
+                        <execution>
+                            <id>ktlint-format</id>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <configuration>
+                                <target name="ktlint">
+                                    <java classname="com.pinterest.ktlint.Main" classpathref="maven.plugin.classpath" dir="${basedir}" failonerror="true" fork="true" taskname="ktlint">
+                                        <arg value="-F"/>
+                                        <arg value="**/*.kt"/>
+                                        <jvmarg value="--add-opens"/>
+                                        <jvmarg value="java.base/java.lang=ALL-UNNAMED"/>
+                                        <!-- see https://pinterest.github.io/ktlint/install/cli/#command-line-usage for more information -->
+                                    </java>
+                                </target>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>ktlint</id>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <phase>verify</phase>
+                            <configuration>
+                                <target name="ktlint">
+                                    <java classname="com.pinterest.ktlint.Main" classpathref="maven.plugin.classpath" dir="${project.basedir}" failonerror="true" fork="true" taskname="ktlint">
+                                        <arg value="src/**/*.kt"/>
+                                        <!-- see https://pinterest.github.io/ktlint/install/cli/#command-line-usage for more information -->
+                                    </java>
+                                </target>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <configuration>
+                    <args>
+                        <arg>-Xjsr305=strict</arg>
+                    </args>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+            </plugin>
             <plugin>
                 <groupId>com.github.ekryd.sortpom</groupId>
                 <artifactId>sortpom-maven-plugin</artifactId>
@@ -87,5 +176,27 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>fix</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-antrun-plugin</artifactId>
+                            <executions>
+                                <execution>
+                                    <id>ktlint-format</id>
+                                    <phase>validate</phase>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

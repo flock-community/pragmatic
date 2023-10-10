@@ -8,7 +8,7 @@ import community.flock.pragmatic.domain.user.model.User.Id
 
 object UserProducer : Producer<User<Id.Valid>, UserDto> {
     override fun User<Id.Valid>.produce() = UserDto(
-        id = id(),
+        id = id().toString(),
         firstName = firstName(),
         lastName = lastName(),
     )

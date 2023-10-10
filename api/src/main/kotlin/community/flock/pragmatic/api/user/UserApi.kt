@@ -50,5 +50,4 @@ interface UserApi {
         const val USERS_PATH = "$apiBaseUrl/users"
         const val BY_ID_PATH = "/{id}"
     }
-
 }

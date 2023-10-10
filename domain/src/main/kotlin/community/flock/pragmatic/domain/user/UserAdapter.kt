@@ -6,11 +6,11 @@ import community.flock.pragmatic.domain.user.model.User.Id
 interface UserAdapter {
     suspend fun getAll(): List<User<Id.Valid>>
 
-    suspend fun getById(id: Int): User<Id.Valid>?
+    suspend fun getById(userId: Id.Valid): User<Id.Valid>?
 
     suspend fun save(user: User<Id.NonExisting>): User<Id.Valid>
 
-    suspend fun deleteById(id: Int): User<Id.Valid>?
+    suspend fun deleteById(userId: Id.Valid): User<Id.Valid>?
 }
 
 interface HasUserAdapter {
