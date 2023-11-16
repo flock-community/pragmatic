@@ -29,4 +29,3 @@ object UUIDInternalizer : Internalizer<String, Either<TechnicalException, UUID>>
     override fun String.internalize() = consume()
         .mapLeft(TechnicalException::invoke)
 }
-

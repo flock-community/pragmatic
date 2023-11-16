@@ -2,4 +2,5 @@
 .DS_Store
 .idea/
 target/
+.mvn/wrapper/maven-wrapper.jar
 http-client.private.env.json

@@ -4,16 +4,16 @@ options=-Drevision=$(version) -Pfix
 .PHONY: *
 
 compile:
-	mvn clean test-compile $(options)
+	./mvnw clean test-compile $(options)
 
 build:
-	mvn clean verify $(options)
+	./mvnw clean verify $(options)
 
 test:
-	mvn clean test $(options)
+	./mvnw clean test $(options)
 
 clean:
-	mvn clean $(options)
+	./mvnw clean $(options)
 
 run:
 	java -jar app/target/app-*.jar
