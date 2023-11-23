@@ -3,15 +3,15 @@ package community.flock.pragmatic.domain.user
 import community.flock.pragmatic.domain.user.model.User
 import community.flock.pragmatic.domain.user.model.User.Id
 
-interface UserContext : HasUserAdapter
+interface UserContext : HasUserRepository
 
 object UserService {
 
-    suspend fun UserContext.getUsers() = userAdapter.getAll()
+    suspend fun UserContext.getUsers() = userRepository.getAll()
 
-    suspend fun UserContext.getUserById(id: Id.Valid) = userAdapter.getById(id)
+    suspend fun UserContext.getUserById(id: Id.Valid) = userRepository.getById(id)
 
-    suspend fun UserContext.saveUser(user: User<Id.NonExisting>) = userAdapter.save(user)
+    suspend fun UserContext.saveUser(user: User<Id.NonExisting>) = userRepository.save(user)
 
-    suspend fun UserContext.deleteUserById(id: Id.Valid) = userAdapter.deleteById(id)
+    suspend fun UserContext.deleteUserById(id: Id.Valid) = userRepository.deleteById(id)
 }

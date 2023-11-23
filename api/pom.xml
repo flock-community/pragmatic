@@ -12,6 +12,7 @@
     <artifactId>api</artifactId>
 
     <properties>
+        <api.version>0.0.1</api.version>
         <javax.version>2.1.1</javax.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <swagger-maven-plugin.version>3.1.8</swagger-maven-plugin.version>
@@ -61,10 +62,10 @@
                             </locations>
                             <info>
                                 <title>Pragmatic Functional Programming in Kotlin API</title>
-                                <version>${revision}</version>
+                                <version>${api.version}</version>
                             </info>
                             <swaggerDirectory>${project.build.directory}/swagger</swaggerDirectory>
-                            <swaggerFileName>Pragmatic-API-${revision}</swaggerFileName>
+                            <swaggerFileName>Pragmatic-API-${api.version}</swaggerFileName>
                             <outputFormats>json</outputFormats>
                             <attachSwaggerArtifact>true</attachSwaggerArtifact>
                         </apiSource>

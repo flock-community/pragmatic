@@ -8,7 +8,7 @@ import community.flock.pragmatic.app.common.Producer
 import community.flock.pragmatic.app.common.mappers.UUIDConsumer.consume
 import community.flock.pragmatic.app.common.mappers.UUIDProducer.produce
 import community.flock.pragmatic.app.exceptions.BusinessException
-import community.flock.pragmatic.app.exceptions.InvalidUUID
+import community.flock.pragmatic.app.exceptions.ParseException.UuidParseException
 import community.flock.pragmatic.app.exceptions.TechnicalException
 import java.util.UUID
 
@@ -18,7 +18,7 @@ object UUIDProducer : Producer<UUID, String> {
 
 object UUIDConsumer : Consumer<String, Either<BusinessException, UUID>> {
     override fun String.consume() = Either.catch { UUID.fromString(this) }
-        .mapLeft { InvalidUUID() }
+        .mapLeft { UuidParseException() }
 }
 
 object UUIDExternalizer : Externalizer<UUID, String> {

@@ -15,7 +15,7 @@ data class User<T : User.Id>(
     sealed interface Id {
         @JvmInline
         value class Valid(override val value: UUID) : Value<UUID>, Id
-        object NonExisting : Id
+        data object NonExisting : Id
     }
 
     companion object {

@@ -4,7 +4,7 @@ import community.flock.pragmatic.app.common.mappers.UUIDConsumer.consume
 import community.flock.pragmatic.app.common.mappers.UUIDExternalizer.externalize
 import community.flock.pragmatic.app.common.mappers.UUIDInternalizer.internalize
 import community.flock.pragmatic.app.common.mappers.UUIDProducer.produce
-import community.flock.pragmatic.app.exceptions.InvalidUUID
+import community.flock.pragmatic.app.exceptions.ParseException.UuidParseException
 import community.flock.pragmatic.app.exceptions.TechnicalException
 import io.kotest.assertions.arrow.core.shouldBeLeft
 import io.kotest.assertions.arrow.core.shouldBeRight
@@ -41,7 +41,7 @@ class UuidTest {
         fun `incorrect uuid string`() {
             "wrong".consume()
                 .shouldBeLeft()
-                .shouldBeInstanceOf<InvalidUUID>()
+                .shouldBeInstanceOf<UuidParseException>()
         }
     }
 
@@ -68,7 +68,7 @@ class UuidTest {
                 .shouldBeLeft()
                 .shouldBeInstanceOf<TechnicalException>()
                 .cause
-                .shouldBeInstanceOf<InvalidUUID>()
+                .shouldBeInstanceOf<UuidParseException>()
         }
     }
 }

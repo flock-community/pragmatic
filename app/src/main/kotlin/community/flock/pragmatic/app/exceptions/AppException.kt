@@ -1,5 +1,8 @@
 package community.flock.pragmatic.app.exceptions
 
+import community.flock.pragmatic.domain.error.DomainError
+import community.flock.pragmatic.domain.error.ValidationError
+
 sealed class AppException(override val message: String, cause: Throwable? = null) : RuntimeException(message, cause)
 
 class TechnicalException(cause: Throwable, override val message: String) :
@@ -12,4 +15,12 @@ class TechnicalException(cause: Throwable, override val message: String) :
 
 sealed class BusinessException(message: String) : AppException(message) {
     override fun fillInStackTrace() = this
+}
+
+class DomainException(val error: DomainError) : BusinessException(error.message)
+
+class ValidationException(errors: List<ValidationError>) : BusinessException(errors.joinToString { it.message })
+
+sealed class ParseException(message: String) : BusinessException(message) {
+    class UuidParseException : ParseException("Not a valid UUID")
 }
