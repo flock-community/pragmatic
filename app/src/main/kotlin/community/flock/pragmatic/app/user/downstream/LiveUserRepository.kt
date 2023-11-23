@@ -1,36 +1,56 @@
 package community.flock.pragmatic.app.user.downstream
 
-import arrow.core.left
-import arrow.core.right
+import arrow.core.Either
+import arrow.core.raise.either
+import arrow.core.raise.ensureNotNull
+import community.flock.pragmatic.app.common.catch
 import community.flock.pragmatic.app.user.downstream.UserExternalizer.externalize
+import community.flock.pragmatic.app.user.downstream.UserInternalizer.internalize
 import community.flock.pragmatic.domain.data.invoke
+import community.flock.pragmatic.domain.error.Error
 import community.flock.pragmatic.domain.error.UserNotFound
 import community.flock.pragmatic.domain.user.UserRepository
-import community.flock.pragmatic.domain.user.model.FirstName
-import community.flock.pragmatic.domain.user.model.LastName
 import community.flock.pragmatic.domain.user.model.User
-import community.flock.pragmatic.domain.user.model.User.Id
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.reactive.asFlow
+import kotlinx.coroutines.reactor.awaitSingle
+import kotlinx.coroutines.reactor.awaitSingleOrNull
+import org.springframework.data.cassandra.repository.ReactiveCassandraRepository
+import org.springframework.stereotype.Component
+import java.util.UUID
 
-class LiveUserRepository : UserRepository {
+@Component
+class LiveUserRepository(private val repository: CassandraRepository) : UserRepository {
+    override suspend fun getAll(): Either<Error, Flow<User<User.Id.Valid>>> = either {
+        repository.findAll()
+            .catch { asFlow() }.bind()
+            .map { it.internalize().bind() }
+    }
 
-    private val user = User(
-        firstName = FirstName("First Name").getOrNull()!!,
-        lastName = LastName("Last Name").getOrNull()!!
-    )
+    override suspend fun getById(userId: User.Id.Valid): Either<Error, User<User.Id.Valid>> = either {
+        val maybeUser = repository
+            .findById(userId())
+            .catch { awaitSingleOrNull() }
+            .bind()
+        val user = ensureNotNull(maybeUser) { UserNotFound(userId) }
+        user.internalize().bind()
+    }
 
-    private val userStore = mutableMapOf(
-        user.externalize().let { it.id.value to it }
-    )
+    override suspend fun save(user: User<User.Id.NonExisting>): Either<Error, User<User.Id.Valid>> = either {
+        user.externalize()
+            .let(repository::save)
+            .catch { awaitSingle() }.bind()
+            .internalize().bind()
+    }
 
-    override suspend fun getAll() = userStore.values.toList().right()
-
-    override suspend fun getById(userId: Id.Valid) =
-        userStore[userId()]?.right() ?: UserNotFound(userId).left()
-
-    override suspend fun save(user: User<Id.NonExisting>) = user.externalize()
-        .also { userStore[it.id.value] = it }
-        .right()
-
-    override suspend fun deleteById(userId: Id.Valid) =
-        userStore.remove(userId())?.right() ?: UserNotFound(userId).left()
+    override suspend fun deleteById(userId: User.Id.Valid): Either<Error, User<User.Id.Valid>> = either {
+        val user = getById(userId).bind()
+        repository
+            .deleteById(user.id())
+            .catch { awaitSingleOrNull() }.bind()
+        user
+    }
 }
+
+interface CassandraRepository : ReactiveCassandraRepository<UserEntity, UUID>

@@ -3,17 +3,17 @@ options=-Drevision=$(version) -Pfix
 
 .PHONY: *
 
+clean:
+	./mvnw clean $(options)
+
 compile:
 	./mvnw clean test-compile $(options)
 
 build:
-	./mvnw clean verify $(options)
+	docker info && ./mvnw clean verify $(options)
 
 test:
-	./mvnw clean test $(options)
-
-clean:
-	./mvnw clean $(options)
+	docker info && ./mvnw clean test $(options)
 
 run:
-	java -jar app/target/app-*.jar
+	docker info && java -jar app/target/app-*.jar

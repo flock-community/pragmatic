@@ -27,6 +27,7 @@ import community.flock.pragmatic.domain.user.UserService.getUserById
 import community.flock.pragmatic.domain.user.UserService.getUsers
 import community.flock.pragmatic.domain.user.UserService.saveUser
 import community.flock.pragmatic.domain.user.model.User
+import kotlinx.coroutines.flow.toList
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -50,7 +51,7 @@ class UserController(appLayer: UserControllerDependencies) : UserApi {
     override suspend fun getUsers() = with(context) {
         either {
             val users = getUsers().mapError().bind()
-            users.produce()
+            users.toList().produce()
         }.handle()
     }
 

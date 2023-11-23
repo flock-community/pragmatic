@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.0</version>
+        <version>3.1.1</version>
     </parent>
 
     <groupId>community.flock.pragmatic</groupId>
@@ -47,7 +47,6 @@
                 <artifactId>arrow-core-jvm</artifactId>
                 <version>${arrow.version}</version>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 
@@ -56,6 +55,7 @@
             <groupId>io.kotest.extensions</groupId>
             <artifactId>kotest-assertions-arrow-jvm</artifactId>
             <version>${kotest-arrow.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
