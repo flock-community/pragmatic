@@ -2,7 +2,7 @@
 GET http://localhost:8080/api/users
 
 ###
-GET http://localhost:8080/api/users/{{userId}}
+GET http://localhost:8080/api/users/cf8c1fe6-fb9e-436f-883f-cf5ffba90629
 
 ###
 POST http://localhost:8080/api/users
@@ -10,8 +10,9 @@ Content-Type: application/json
 
 {
   "firstName": "Luke",
-  "lastName": "Skywalker"
+  "lastName": "Skywalker",
+  "birthDay": "1950-01-01"
 }
 
 ###
-DELETE http://localhost:8080/api/users/{{userId}}
+DELETE http://localhost:8080/api/users/4423290e-865a-4c9a-8901-232e6b7053dd

@@ -37,32 +37,53 @@
     <build>
         <pluginManagement>
             <plugins>
+                <!--                <plugin>-->
+                <!--                    <groupId>org.openapitools</groupId>-->
+                <!--                    <artifactId>openapi-generator-maven-plugin</artifactId>-->
+                <!--                    <version>${openapi-generator.version}</version>-->
+                <!--                    <configuration>-->
+                <!--                        <generatorName>kotlin</generatorName>-->
+                <!--                        <library>jvm-ktor</library>-->
+                <!--                        <generateModelTests>false</generateModelTests>-->
+                <!--                        <generateModelDocumentation>false</generateModelDocumentation>-->
+                <!--                        <generateApis>false</generateApis>-->
+                <!--                        <supportingFilesToGenerate>JSON.java,RFC3339DateFormat.java</supportingFilesToGenerate>-->
+                <!--                        <configOptions>-->
+                <!--                            <dateLibrary>java8</dateLibrary>-->
+                <!--                            <serializationLibrary>jackson</serializationLibrary>-->
+                <!--                            <enumPropertyNaming>UPPERCASE</enumPropertyNaming>-->
+                <!--                        </configOptions>-->
+                <!--                        <typeMappings>-->
+                <!--                            <typeMapping>float=java.math.BigDecimal</typeMapping>-->
+                <!--                            <typeMapping>double=java.math.BigDecimal</typeMapping>-->
+                <!--                        </typeMappings>-->
+                <!--                    </configuration>-->
+                <!--                    <executions>-->
+                <!--                        <execution>-->
+                <!--                            <goals>-->
+                <!--                                <goal>generate</goal>-->
+                <!--                            </goals>-->
+                <!--                        </execution>-->
+                <!--                    </executions>-->
+                <!--                </plugin>-->
                 <plugin>
-                    <groupId>org.openapitools</groupId>
-                    <artifactId>openapi-generator-maven-plugin</artifactId>
-                    <version>${openapi-generator.version}</version>
-                    <configuration>
-                        <generatorName>kotlin</generatorName>
-                        <library>jvm-ktor</library>
-                        <generateModelTests>false</generateModelTests>
-                        <generateModelDocumentation>false</generateModelDocumentation>
-                        <generateApis>false</generateApis>
-                        <supportingFilesToGenerate>JSON.java,RFC3339DateFormat.java</supportingFilesToGenerate>
-                        <configOptions>
-                            <dateLibrary>java8</dateLibrary>
-                            <serializationLibrary>jackson</serializationLibrary>
-                            <enumPropertyNaming>UPPERCASE</enumPropertyNaming>
-                        </configOptions>
-                        <typeMappings>
-                            <typeMapping>float=java.math.BigDecimal</typeMapping>
-                            <typeMapping>double=java.math.BigDecimal</typeMapping>
-                        </typeMappings>
-                    </configuration>
+                    <groupId>community.flock.wirespec.plugin.maven</groupId>
+                    <artifactId>wirespec-maven-plugin</artifactId>
+                    <version>${wirespec.version}</version>
                     <executions>
                         <execution>
+                            <id>kotlin-v2</id>
                             <goals>
                                 <goal>generate</goal>
                             </goals>
+                            <configuration>
+                                <output>${project.build.directory}/generated-sources/wirespec/src/main/kotlin</output>
+                                <openapi>v3</openapi>
+                                <languages>
+                                    <language>Kotlin</language>
+                                </languages>
+                                <shared>true</shared>
+                            </configuration>
                         </execution>
                     </executions>
                 </plugin>
@@ -82,6 +103,7 @@
                         <configuration>
                             <sourceDirs>
                                 <sourceDir>target/generated-sources/openapi/src/main/kotlin</sourceDir>
+                                <sourceDir>target/generated-sources/wirespec/src/main/kotlin</sourceDir>
                             </sourceDirs>
                         </configuration>
                     </execution>

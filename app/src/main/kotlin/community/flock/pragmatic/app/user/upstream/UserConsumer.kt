@@ -11,6 +11,7 @@ import community.flock.pragmatic.domain.user.model.FirstName
 import community.flock.pragmatic.domain.user.model.LastName
 import community.flock.pragmatic.domain.user.model.User
 import community.flock.pragmatic.domain.user.model.User.Id
+import community.flock.wirespec.generated.WsPotentialUserDto
 
 typealias ValidatedUser = Either<ValidationException, User<Id.NonExisting>>
 
@@ -20,6 +21,17 @@ object UserConsumer : Consumer<PotentialUserDto, ValidatedUser> {
             { FirstName(firstName).bind() },
             { LastName(lastName).bind() },
             { BirthDay(birthDay).bind() },
+            User.Companion::invoke
+        )
+    }.mapLeft(::ValidationException)
+}
+
+object WsUserConsumer : Consumer<WsPotentialUserDto, ValidatedUser> {
+    override fun WsPotentialUserDto.consume(): ValidatedUser = either {
+        zipOrAccumulate(
+            { FirstName(firstName).bind() },
+            { LastName(lastName).bind() },
+            { BirthDay(birthDate).bind() },
             User.Companion::invoke
         )
     }.mapLeft(::ValidationException)

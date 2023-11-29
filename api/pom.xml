@@ -81,6 +81,26 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>community.flock.wirespec.plugin.maven</groupId>
+                <artifactId>wirespec-maven-plugin</artifactId>
+                <version>${wirespec.version}</version>
+                <executions>
+                    <execution>
+                        <id>kotlin</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <input>${project.basedir}/src/main/wirespec</input>
+                            <output>${project.build.directory}/generated-sources/kotlin</output>
+                            <languages>
+                                <language>Kotlin</language>
+                            </languages>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
             </plugin>

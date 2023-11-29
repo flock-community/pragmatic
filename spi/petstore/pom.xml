@@ -25,6 +25,19 @@
                     <inputSpec>${project.basedir}/src/main/resources/petstore-${petstore-api.version}.json</inputSpec>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>community.flock.wirespec.plugin.maven</groupId>
+                <artifactId>wirespec-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>kotlin-v2</id>
+                        <configuration>
+                            <input>${project.basedir}/src/main/resources/petstore.json</input>
+                            <packageName>community.flock.wirespec.petstore</packageName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 

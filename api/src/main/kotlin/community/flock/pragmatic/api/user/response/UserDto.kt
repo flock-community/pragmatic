@@ -11,4 +11,7 @@ data class UserDto(
 
     @ApiModelProperty(required = true)
     val lastName: String,
+
+    @ApiModelProperty(required = true)
+    val birthDay: String,
 )

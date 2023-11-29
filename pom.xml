@@ -28,6 +28,7 @@
         <kotest.version>5.7.2</kotest.version>
         <kotlin.version>1.9.20</kotlin.version>
         <ktlint.version>0.42.0</ktlint.version>
+        <wirespec.version>0.8.31</wirespec.version>
     </properties>
 
     <dependencyManagement>
@@ -40,6 +41,11 @@
             <dependency>
                 <groupId>community.flock.pragmatic</groupId>
                 <artifactId>api</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>community.flock.pragmatic</groupId>
+                <artifactId>petstore</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>

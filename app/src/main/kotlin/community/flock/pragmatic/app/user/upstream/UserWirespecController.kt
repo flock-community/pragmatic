@@ -3,30 +3,26 @@ package community.flock.pragmatic.app.user.upstream
 import arrow.core.Either
 import arrow.core.getOrElse
 import arrow.core.raise.either
-import community.flock.pragmatic.api.user.UserApi
-import community.flock.pragmatic.api.user.UserApi.Companion.BY_ID_PATH
-import community.flock.pragmatic.api.user.UserApi.Companion.USERS_PATH
-import community.flock.pragmatic.api.user.request.PotentialUserDto
 import community.flock.pragmatic.app.common.mappers.UUIDConsumer.consume
 import community.flock.pragmatic.app.exceptions.AppException
 import community.flock.pragmatic.app.exceptions.DomainException
 import community.flock.pragmatic.app.exceptions.TechnicalException
 import community.flock.pragmatic.app.exceptions.ValidationException
-import community.flock.pragmatic.app.user.upstream.UserConsumer.consume
-import community.flock.pragmatic.app.user.upstream.UserProducer.produce
-import community.flock.pragmatic.app.user.upstream.UsersProducer.produce
+import community.flock.pragmatic.app.user.upstream.WsUserConsumer.consume
+import community.flock.pragmatic.app.user.upstream.WsUserProducer.produce
+import community.flock.pragmatic.app.user.upstream.WsUsersProducer.produce
 import community.flock.pragmatic.domain.error.DomainError
 import community.flock.pragmatic.domain.error.Error
 import community.flock.pragmatic.domain.error.TechnicalError
 import community.flock.pragmatic.domain.error.ValidationError
 import community.flock.pragmatic.domain.error.ValidationErrors
-import community.flock.pragmatic.domain.user.HasUserRepository
 import community.flock.pragmatic.domain.user.UserContext
 import community.flock.pragmatic.domain.user.UserService.deleteUserById
 import community.flock.pragmatic.domain.user.UserService.getUserById
 import community.flock.pragmatic.domain.user.UserService.getUsers
 import community.flock.pragmatic.domain.user.UserService.saveUser
 import community.flock.pragmatic.domain.user.model.User
+import community.flock.wirespec.generated.WsPotentialUserDto
 import kotlinx.coroutines.flow.toList
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -36,26 +32,24 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-interface UserControllerDependencies : HasUserRepository
-
 @RestController
-@RequestMapping(USERS_PATH)
-class UserController(appLayer: UserControllerDependencies) : UserApi {
+@RequestMapping("/wirespec/users")
+class UserWirespecController(appLayer: UserControllerDependencies) {
 
     private val context = object : UserContext {
         override val userRepository = appLayer.userRepository
     }
 
     @GetMapping
-    override suspend fun getUsers() = with(context) {
+    suspend fun getUsers() = with(context) {
         either {
             val users = getUsers().mapError().bind()
             users.toList().produce()
         }.handle()
     }
 
-    @GetMapping(BY_ID_PATH)
-    override suspend fun getUserById(@PathVariable id: String) = with(context) {
+    @GetMapping("/{id}")
+    suspend fun getUserById(@PathVariable id: String) = with(context) {
         either {
             val uuid = id.consume().bind()
             val user = getUserById(User.Id.Valid(uuid)).mapError().bind()
@@ -64,16 +58,16 @@ class UserController(appLayer: UserControllerDependencies) : UserApi {
     }.handle()
 
     @PostMapping
-    override suspend fun postUser(@RequestBody potentialUser: PotentialUserDto) = with(context) {
+    suspend fun postUser(@RequestBody potentialUser: WsPotentialUserDto) = with(context) {
         either {
             val user = potentialUser.consume().bind()
             val savedUser = saveUser(user).mapError().bind()
-            savedUser.produce()
+            with(WsUserProducer) { savedUser.produce() }
         }
     }.handle()
 
-    @DeleteMapping(BY_ID_PATH)
-    override suspend fun deleteUserById(@PathVariable("id") id: String) = with(context) {
+    @DeleteMapping("/{id}")
+    suspend fun deleteUserById(@PathVariable("id") id: String) = with(context) {
         either {
             val uuid = id.consume().bind()
             val user = deleteUserById(User.Id.Valid(uuid)).mapError().bind()
