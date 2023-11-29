@@ -22,6 +22,7 @@ class TestUserRepository : UserRepository {
         id = User.Id.Valid(UUID.randomUUID()),
         firstName = user.firstName,
         lastName = user.lastName,
+        birthDay = user.birthDay,
     ).also { users[it.id()] = it }.right()
 
     override suspend fun deleteById(userId: User.Id.Valid) =

@@ -10,6 +10,7 @@ object UserMother {
         id = User.Id.Valid(UUID.randomUUID()),
         firstName = FirstName("FirstName").getOrNull()!!,
         lastName = LastName("LastName").getOrNull()!!,
+        birthDay = BirthDay("1999-01-01").getOrNull()!!,
     )
 
     fun getUserWithId(userId: User.Id.Valid = this.userId) = createUser().copy(id = userId)

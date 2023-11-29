@@ -7,9 +7,11 @@ import community.flock.pragmatic.app.common.Externalizer
 import community.flock.pragmatic.app.common.Internalizer
 import community.flock.pragmatic.domain.data.invoke
 import community.flock.pragmatic.domain.error.ValidationErrors
+import community.flock.pragmatic.domain.user.model.BirthDay
 import community.flock.pragmatic.domain.user.model.FirstName
 import community.flock.pragmatic.domain.user.model.LastName
 import community.flock.pragmatic.domain.user.model.User
+import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
 import java.util.UUID
 
 object UserInternalizer : Internalizer<UserEntity, Either<ValidationErrors, User<User.Id.Valid>>> {
@@ -18,7 +20,8 @@ object UserInternalizer : Internalizer<UserEntity, Either<ValidationErrors, User
             { User.Id.Valid(userId) },
             { FirstName(firstName).bind() },
             { LastName(lastName).bind() },
-            { id, first, last -> User(id, first, last) },
+            { BirthDay(birthDay).bind() },
+            { id, first, last, day -> User(id, first, last, day) },
         )
         user
     }.mapLeft(::ValidationErrors)
@@ -29,5 +32,6 @@ object UserExternalizer : Externalizer<User<User.Id.NonExisting>, UserEntity> {
         userId = UUID.randomUUID(),
         firstName = firstName(),
         lastName = lastName(),
+        birthDay = birthDay().format(ISO_LOCAL_DATE),
     )
 }

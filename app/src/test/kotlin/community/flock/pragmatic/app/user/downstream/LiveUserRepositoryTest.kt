@@ -39,7 +39,12 @@ class LiveUserRepositoryTest {
     inner class Repository {
         @Test
         fun testLiveUserRepository(): Unit = runBlocking {
-            val user = PotentialUserDto(firstName = "FirstName", lastName = "LastName").consume().getOrElse { throw it }
+            val user = PotentialUserDto(
+                firstName = "FirstName",
+                lastName = "LastName",
+                birthDay = "2020-01-01"
+            ).consume()
+                .getOrElse { throw it }
             userRepository.save(user)
             userRepository.getAll().shouldBeRight().toList().run {
                 size shouldBe 1

@@ -6,6 +6,7 @@ import arrow.core.raise.zipOrAccumulate
 import community.flock.pragmatic.api.user.request.PotentialUserDto
 import community.flock.pragmatic.app.common.Consumer
 import community.flock.pragmatic.app.exceptions.ValidationException
+import community.flock.pragmatic.domain.user.model.BirthDay
 import community.flock.pragmatic.domain.user.model.FirstName
 import community.flock.pragmatic.domain.user.model.LastName
 import community.flock.pragmatic.domain.user.model.User
@@ -18,6 +19,7 @@ object UserConsumer : Consumer<PotentialUserDto, ValidatedUser> {
         zipOrAccumulate(
             { FirstName(firstName).bind() },
             { LastName(lastName).bind() },
+            { BirthDay(birthDay).bind() },
             User.Companion::invoke
         )
     }.mapLeft(::ValidationException)

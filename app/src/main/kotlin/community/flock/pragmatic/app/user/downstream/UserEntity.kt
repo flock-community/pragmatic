@@ -15,4 +15,7 @@ data class UserEntity(
 
     @field:Column("last_name")
     val lastName: String,
+
+    @field:Column("birth_day")
+    val birthDay: String,
 )
