@@ -56,11 +56,9 @@ value class LastName private constructor(override val value: String) : Value<Str
 @JvmInline
 value class BirthDay private constructor(override val value: LocalDate) : Value<LocalDate> {
     companion object {
-        operator fun invoke(s: String) = either {
-            val date = Either.catch { LocalDate.parse(s, ISO_LOCAL_DATE) }
-                .mapLeft { BirthDayError.Invalid }
-                .bind()
-            BirthDay(date)
-        }
+        operator fun invoke(s: String) = Either
+            .catch { LocalDate.parse(s, ISO_LOCAL_DATE) }
+            .mapLeft { BirthDayError.Invalid }
+            .map(::BirthDay)
     }
 }
