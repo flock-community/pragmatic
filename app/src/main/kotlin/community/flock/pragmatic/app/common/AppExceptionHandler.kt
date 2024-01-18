@@ -3,8 +3,6 @@ package community.flock.pragmatic.app.common
 import community.flock.pragmatic.app.exceptions.AppException
 import community.flock.pragmatic.app.exceptions.BusinessException
 import community.flock.pragmatic.app.exceptions.DomainException
-import community.flock.pragmatic.app.exceptions.ParseException
-import community.flock.pragmatic.app.exceptions.ParseException.UuidParseException
 import community.flock.pragmatic.app.exceptions.TechnicalException
 import community.flock.pragmatic.app.exceptions.ValidationException
 import community.flock.pragmatic.domain.error.DomainError
@@ -29,12 +27,7 @@ class AppExceptionHandler {
 
 private fun BusinessException.handle() = when (this) {
     is DomainException -> error.handle()
-    is ParseException -> handle()
     is ValidationException -> badRequest().body(message)
-}
-
-private fun ParseException.handle() = when (this) {
-    is UuidParseException -> badRequest().body(message)
 }
 
 private fun DomainError.handle() = when (this) {

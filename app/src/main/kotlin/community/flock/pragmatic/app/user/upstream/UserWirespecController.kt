@@ -3,12 +3,12 @@ package community.flock.pragmatic.app.user.upstream
 import arrow.core.Either
 import arrow.core.getOrElse
 import arrow.core.raise.either
-import community.flock.pragmatic.app.common.mappers.UUIDConsumer.consume
+import community.flock.pragmatic.app.common.mappers.UUIDConsumer.validate
 import community.flock.pragmatic.app.exceptions.AppException
 import community.flock.pragmatic.app.exceptions.DomainException
 import community.flock.pragmatic.app.exceptions.TechnicalException
 import community.flock.pragmatic.app.exceptions.ValidationException
-import community.flock.pragmatic.app.user.upstream.WsUserConsumer.consume
+import community.flock.pragmatic.app.user.upstream.WsUserConsumer.validate
 import community.flock.pragmatic.app.user.upstream.WsUserProducer.produce
 import community.flock.pragmatic.app.user.upstream.WsUsersProducer.produce
 import community.flock.pragmatic.domain.error.DomainError
@@ -41,38 +41,30 @@ class UserWirespecController(appLayer: UserControllerDependencies) {
     }
 
     @GetMapping
-    suspend fun getUsers() = with(context) {
-        either {
-            val users = getUsers().mapError().bind()
-            users.toList().produce()
-        }.handle()
-    }
+    suspend fun getUsers() = either {
+        val users = context.getUsers().mapError().bind()
+        users.toList().produce()
+    }.handle()
 
     @GetMapping("/{id}")
-    suspend fun getUserById(@PathVariable id: String) = with(context) {
-        either {
-            val uuid = id.consume().bind()
-            val user = getUserById(User.Id.Valid(uuid)).mapError().bind()
-            user.produce()
-        }
+    suspend fun getUserById(@PathVariable id: String) = either {
+        val uuid = id.validate().bind()
+        val user = context.getUserById(User.Id.Valid(uuid)).mapError().bind()
+        user.produce()
     }.handle()
 
     @PostMapping
-    suspend fun postUser(@RequestBody potentialUser: WsPotentialUserDto) = with(context) {
-        either {
-            val user = potentialUser.consume().bind()
-            val savedUser = saveUser(user).mapError().bind()
-            with(WsUserProducer) { savedUser.produce() }
-        }
+    suspend fun postUser(@RequestBody potentialUser: WsPotentialUserDto) = either {
+        val user = potentialUser.validate().bind()
+        val savedUser = context.saveUser(user).mapError().bind()
+        with(WsUserProducer) { savedUser.produce() }
     }.handle()
 
     @DeleteMapping("/{id}")
-    suspend fun deleteUserById(@PathVariable("id") id: String) = with(context) {
-        either {
-            val uuid = id.consume().bind()
-            val user = deleteUserById(User.Id.Valid(uuid)).mapError().bind()
-            user.produce()
-        }
+    suspend fun deleteUserById(@PathVariable("id") id: String) = either {
+        val uuid = id.validate().bind()
+        val user = context.deleteUserById(User.Id.Valid(uuid)).mapError().bind()
+        user.produce()
     }.handle()
 
     private fun <R> Either<Error, R>.mapError() = mapLeft {

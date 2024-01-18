@@ -20,7 +20,3 @@ sealed class BusinessException(message: String) : AppException(message) {
 class DomainException(val error: DomainError) : BusinessException(error.message)
 
 class ValidationException(errors: List<ValidationError>) : BusinessException(errors.joinToString { it.message })
-
-sealed class ParseException(message: String) : BusinessException(message) {
-    class UuidParseException : ParseException("Not a valid UUID")
-}

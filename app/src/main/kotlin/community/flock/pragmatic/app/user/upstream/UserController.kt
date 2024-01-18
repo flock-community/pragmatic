@@ -7,12 +7,12 @@ import community.flock.pragmatic.api.user.UserApi
 import community.flock.pragmatic.api.user.UserApi.Companion.BY_ID_PATH
 import community.flock.pragmatic.api.user.UserApi.Companion.USERS_PATH
 import community.flock.pragmatic.api.user.request.PotentialUserDto
-import community.flock.pragmatic.app.common.mappers.UUIDConsumer.consume
+import community.flock.pragmatic.app.common.mappers.UUIDConsumer.validate
 import community.flock.pragmatic.app.exceptions.AppException
 import community.flock.pragmatic.app.exceptions.DomainException
 import community.flock.pragmatic.app.exceptions.TechnicalException
 import community.flock.pragmatic.app.exceptions.ValidationException
-import community.flock.pragmatic.app.user.upstream.UserConsumer.consume
+import community.flock.pragmatic.app.user.upstream.UserConsumer.validate
 import community.flock.pragmatic.app.user.upstream.UserProducer.produce
 import community.flock.pragmatic.app.user.upstream.UsersProducer.produce
 import community.flock.pragmatic.domain.error.DomainError
@@ -47,38 +47,30 @@ class UserController(appLayer: UserControllerDependencies) : UserApi {
     }
 
     @GetMapping
-    override suspend fun getUsers() = with(context) {
-        either {
-            val users = getUsers().mapError().bind()
-            users.toList().produce()
-        }.handle()
-    }
+    override suspend fun getUsers() = either {
+        val users = context.getUsers().mapError().bind()
+        users.toList().produce()
+    }.handle()
 
     @GetMapping(BY_ID_PATH)
-    override suspend fun getUserById(@PathVariable id: String) = with(context) {
-        either {
-            val uuid = id.consume().bind()
-            val user = getUserById(User.Id.Valid(uuid)).mapError().bind()
-            user.produce()
-        }
+    override suspend fun getUserById(@PathVariable id: String) = either {
+        val uuid = id.validate().bind()
+        val user = context.getUserById(User.Id.Valid(uuid)).mapError().bind()
+        user.produce()
     }.handle()
 
     @PostMapping
-    override suspend fun postUser(@RequestBody potentialUser: PotentialUserDto) = with(context) {
-        either {
-            val user = potentialUser.consume().bind()
-            val savedUser = saveUser(user).mapError().bind()
-            savedUser.produce()
-        }
+    override suspend fun postUser(@RequestBody potentialUser: PotentialUserDto) = either {
+        val user = potentialUser.validate().bind()
+        val savedUser = context.saveUser(user).mapError().bind()
+        savedUser.produce()
     }.handle()
 
     @DeleteMapping(BY_ID_PATH)
-    override suspend fun deleteUserById(@PathVariable("id") id: String) = with(context) {
-        either {
-            val uuid = id.consume().bind()
-            val user = deleteUserById(User.Id.Valid(uuid)).mapError().bind()
-            user.produce()
-        }
+    override suspend fun deleteUserById(@PathVariable("id") id: String) = either {
+        val uuid = id.validate().bind()
+        val user = context.deleteUserById(User.Id.Valid(uuid)).mapError().bind()
+        user.produce()
     }.handle()
 
     private fun <R> Either<Error, R>.mapError() = mapLeft {

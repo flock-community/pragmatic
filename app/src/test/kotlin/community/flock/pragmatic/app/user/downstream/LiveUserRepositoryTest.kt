@@ -4,7 +4,7 @@ import arrow.core.getOrElse
 import com.datastax.oss.driver.api.core.CqlSession
 import community.flock.pragmatic.api.user.request.PotentialUserDto
 import community.flock.pragmatic.app.environment.cassandraDockerVersion
-import community.flock.pragmatic.app.user.upstream.UserConsumer.consume
+import community.flock.pragmatic.app.user.upstream.UserConsumer.validate
 import community.flock.pragmatic.domain.data.invoke
 import io.kotest.assertions.arrow.core.shouldBeRight
 import io.kotest.common.runBlocking
@@ -43,8 +43,7 @@ class LiveUserRepositoryTest {
                 firstName = "FirstName",
                 lastName = "LastName",
                 birthDay = "2020-01-01"
-            ).consume()
-                .getOrElse { throw it }
+            ).validate().getOrElse { throw it }
             userRepository.save(user)
             userRepository.getAll().shouldBeRight().toList().run {
                 size shouldBe 1
