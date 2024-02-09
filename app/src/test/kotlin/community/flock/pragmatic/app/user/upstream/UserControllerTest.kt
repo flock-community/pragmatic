@@ -6,9 +6,9 @@ import community.flock.pragmatic.domain.user.model.BirthDay
 import community.flock.pragmatic.domain.user.model.FirstName
 import community.flock.pragmatic.domain.user.model.LastName
 import community.flock.pragmatic.domain.user.model.User
+import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
@@ -35,13 +35,13 @@ class UserControllerTest {
     }
 
     @Test
-    fun `UserController function getUsers should return a list of UserDto`() = runBlocking {
+    fun `UserController function getUsers should return a list of UserDto`(): Unit = runBlocking {
         UserController(testLayer)
             .getUsers()
             .first()
             .run {
-                assertEquals("FirstName", firstName)
-                assertEquals("LastName", lastName)
+                firstName shouldBe "FirstName"
+                lastName shouldBe "LastName"
             }
     }
 }

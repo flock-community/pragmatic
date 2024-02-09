@@ -1,19 +1,15 @@
 package community.flock.pragmatic.domain.user.model
 
 import arrow.core.Either
-import arrow.core.EitherNel
 import arrow.core.raise.either
 import arrow.core.raise.ensure
 import community.flock.pragmatic.domain.data.Value
 import community.flock.pragmatic.domain.error.BirthDayError
 import community.flock.pragmatic.domain.error.FirstNameError
 import community.flock.pragmatic.domain.error.LastNameError
-import community.flock.pragmatic.domain.error.ValidationError
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
 import java.util.UUID
-
-typealias Bla = EitherNel<ValidationError, String>
 
 data class User<T : User.Id>(
     val id: T,

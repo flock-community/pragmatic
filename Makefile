@@ -17,3 +17,6 @@ test:
 
 run:
 	docker info && java -jar app/target/app-*.jar
+
+update:
+	./mvnw versions:update-parent versions:update-properties versions:use-latest-versions $(options)

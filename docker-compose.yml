@@ -2,7 +2,7 @@ version: "3"
 
 services:
   cassandra:
-    image: cassandra:4.0.5 # Also update in Variables.kt in test/environment
+    image: cassandra:4.0.5 # Also update app/src/test/community/flock/pragmatic/app/environment/Variables.kt
     hostname: cassandra
     container_name: cassandra
     ports:
