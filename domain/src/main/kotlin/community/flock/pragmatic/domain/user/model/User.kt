@@ -20,11 +20,16 @@ data class User<T : User.Id>(
     sealed interface Id {
         @JvmInline
         value class Valid(override val value: UUID) : Value<UUID>, Id
+
         data object NonExisting : Id
     }
 
     companion object {
-        operator fun invoke(firstName: FirstName, lastName: LastName, birthDay: BirthDay) = User(
+        operator fun invoke(
+            firstName: FirstName,
+            lastName: LastName,
+            birthDay: BirthDay,
+        ) = User(
             id = Id.NonExisting,
             firstName = firstName,
             lastName = lastName,
@@ -36,29 +41,32 @@ data class User<T : User.Id>(
 @JvmInline
 value class FirstName private constructor(override val value: String) : Value<String> {
     companion object {
-        operator fun invoke(s: String) = either {
-            ensure(s.isNotBlank()) { FirstNameError.Empty }
-            FirstName(s.trim())
-        }
+        operator fun invoke(s: String) =
+            either {
+                ensure(s.isNotBlank()) { FirstNameError.Empty }
+                FirstName(s.trim())
+            }
     }
 }
 
 @JvmInline
 value class LastName private constructor(override val value: String) : Value<String> {
     companion object {
-        operator fun invoke(s: String) = either {
-            ensure(s.isNotBlank()) { LastNameError.Empty }
-            LastName(s.trim())
-        }
+        operator fun invoke(s: String) =
+            either {
+                ensure(s.isNotBlank()) { LastNameError.Empty }
+                LastName(s.trim())
+            }
     }
 }
 
 @JvmInline
 value class BirthDay private constructor(override val value: LocalDate) : Value<LocalDate> {
     companion object {
-        operator fun invoke(s: String) = Either
-            .catch { LocalDate.parse(s, ISO_LOCAL_DATE) }
-            .mapLeft { BirthDayError.Invalid }
-            .map(::BirthDay)
+        operator fun invoke(s: String) =
+            Either
+                .catch { LocalDate.parse(s, ISO_LOCAL_DATE) }
+                .mapLeft { BirthDayError.Invalid }
+                .map(::BirthDay)
     }
 }

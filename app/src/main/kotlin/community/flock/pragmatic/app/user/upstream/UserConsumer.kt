@@ -15,23 +15,25 @@ import community.flock.pragmatic.domain.user.model.User.Id
 import community.flock.wirespec.generated.WsPotentialUserDto
 
 object UserConsumer : Validator<ValidationError, PotentialUserDto, User<Id.NonExisting>> {
-    override fun PotentialUserDto.consume(): EitherNel<UserValidationError, User<Id.NonExisting>> = either {
-        zipOrAccumulate(
-            { FirstName(firstName).bind() },
-            { LastName(lastName).bind() },
-            { BirthDay(birthDay).bind() },
-            User.Companion::invoke
-        )
-    }
+    override fun PotentialUserDto.consume(): EitherNel<UserValidationError, User<Id.NonExisting>> =
+        either {
+            zipOrAccumulate(
+                { FirstName(firstName).bind() },
+                { LastName(lastName).bind() },
+                { BirthDay(birthDay).bind() },
+                User.Companion::invoke,
+            )
+        }
 }
 
 object WsUserConsumer : Validator<ValidationError, WsPotentialUserDto, User<Id.NonExisting>> {
-    override fun WsPotentialUserDto.consume(): EitherNel<UserValidationError, User<Id.NonExisting>> = either {
-        zipOrAccumulate(
-            { FirstName(firstName).bind() },
-            { LastName(lastName).bind() },
-            { BirthDay(birthDate).bind() },
-            User.Companion::invoke
-        )
-    }
+    override fun WsPotentialUserDto.consume(): EitherNel<UserValidationError, User<Id.NonExisting>> =
+        either {
+            zipOrAccumulate(
+                { FirstName(firstName).bind() },
+                { LastName(lastName).bind() },
+                { BirthDay(birthDate).bind() },
+                User.Companion::invoke,
+            )
+        }
 }

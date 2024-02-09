@@ -18,8 +18,9 @@ object UUIDProducer : Producer<UUID, String> {
 }
 
 object UUIDConsumer : Validator<UUIDError, String, UUID> {
-    override fun String.consume(): EitherNel<UUIDError, UUID> = Either.catch { UUID.fromString(this) }
-        .mapLeft { UUIDError.nel() }
+    override fun String.consume(): EitherNel<UUIDError, UUID> =
+        Either.catch { UUID.fromString(this) }
+            .mapLeft { UUIDError.nel() }
 }
 
 object UUIDExternalizer : Externalizer<UUID, String> {
@@ -27,6 +28,7 @@ object UUIDExternalizer : Externalizer<UUID, String> {
 }
 
 object UUIDInternalizer : Internalizer<String, Either<TechnicalException, UUID>> {
-    override fun String.internalize() = validate()
-        .mapLeft(TechnicalException::invoke)
+    override fun String.internalize() =
+        validate()
+            .mapLeft(TechnicalException::invoke)
 }

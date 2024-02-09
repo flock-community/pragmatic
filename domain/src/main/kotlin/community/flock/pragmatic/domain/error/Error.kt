@@ -9,8 +9,10 @@ class TechnicalError(
     override val message: String,
 ) : Error, RuntimeException(message, cause) {
     companion object {
-        operator fun invoke(cause: Throwable, message: String? = null) =
-            TechnicalError(cause, message ?: "Technical Exception, check cause")
+        operator fun invoke(
+            cause: Throwable,
+            message: String? = null,
+        ) = TechnicalError(cause, message ?: "Technical Exception, check cause")
     }
 }
 

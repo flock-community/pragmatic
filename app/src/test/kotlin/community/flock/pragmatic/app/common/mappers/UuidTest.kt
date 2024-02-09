@@ -18,7 +18,6 @@ import org.junit.jupiter.api.Test
 import java.util.UUID
 
 class UuidTest {
-
     private val uuidString = "b48da74a-ef4a-4842-9f3e-2cc9153cdc89"
     private val uuid = UUID.fromString(uuidString)
 

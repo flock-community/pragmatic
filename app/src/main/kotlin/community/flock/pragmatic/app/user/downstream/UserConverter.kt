@@ -15,23 +15,26 @@ import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
 import java.util.UUID
 
 object UserInternalizer : Internalizer<UserEntity, Either<ValidationErrors, User<User.Id.Valid>>> {
-    override fun UserEntity.internalize() = either {
-        val user = zipOrAccumulate(
-            { User.Id.Valid(userId) },
-            { FirstName(firstName).bind() },
-            { LastName(lastName).bind() },
-            { BirthDay(birthDay).bind() },
-            { id, first, last, day -> User(id, first, last, day) },
-        )
-        user
-    }.mapLeft(::ValidationErrors)
+    override fun UserEntity.internalize() =
+        either {
+            val user =
+                zipOrAccumulate(
+                    { User.Id.Valid(userId) },
+                    { FirstName(firstName).bind() },
+                    { LastName(lastName).bind() },
+                    { BirthDay(birthDay).bind() },
+                    { id, first, last, day -> User(id, first, last, day) },
+                )
+            user
+        }.mapLeft(::ValidationErrors)
 }
 
 object UserExternalizer : Externalizer<User<User.Id.NonExisting>, UserEntity> {
-    override fun User<User.Id.NonExisting>.externalize() = UserEntity(
-        userId = UUID.randomUUID(),
-        firstName = firstName(),
-        lastName = lastName(),
-        birthDay = birthDay().format(ISO_LOCAL_DATE),
-    )
+    override fun User<User.Id.NonExisting>.externalize() =
+        UserEntity(
+            userId = UUID.randomUUID(),
+            firstName = firstName(),
+            lastName = lastName(),
+            birthDay = birthDay().format(ISO_LOCAL_DATE),
+        )
 }

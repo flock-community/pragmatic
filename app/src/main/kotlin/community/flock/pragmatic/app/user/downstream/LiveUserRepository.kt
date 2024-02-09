@@ -22,35 +22,40 @@ import java.util.UUID
 
 @Component
 class LiveUserRepository(private val repository: CassandraRepository) : UserRepository {
-    override suspend fun getAll(): Either<Error, Flow<User<User.Id.Valid>>> = either {
-        repository.findAll()
-            .catch { asFlow() }.bind()
-            .map { it.internalize().bind() }
-    }
+    override suspend fun getAll(): Either<Error, Flow<User<User.Id.Valid>>> =
+        either {
+            repository.findAll()
+                .catch { asFlow() }.bind()
+                .map { it.internalize().bind() }
+        }
 
-    override suspend fun getById(userId: User.Id.Valid): Either<Error, User<User.Id.Valid>> = either {
-        val maybeUser = repository
-            .findById(userId())
-            .catch { awaitSingleOrNull() }
-            .bind()
-        val user = ensureNotNull(maybeUser) { UserNotFound(userId) }
-        user.internalize().bind()
-    }
+    override suspend fun getById(userId: User.Id.Valid): Either<Error, User<User.Id.Valid>> =
+        either {
+            val maybeUser =
+                repository
+                    .findById(userId())
+                    .catch { awaitSingleOrNull() }
+                    .bind()
+            val user = ensureNotNull(maybeUser) { UserNotFound(userId) }
+            user.internalize().bind()
+        }
 
-    override suspend fun save(user: User<User.Id.NonExisting>): Either<Error, User<User.Id.Valid>> = either {
-        user.externalize()
-            .let(repository::save)
-            .catch { awaitSingle() }.bind()
-            .internalize().bind()
-    }
+    override suspend fun save(user: User<User.Id.NonExisting>): Either<Error, User<User.Id.Valid>> =
+        either {
+            user.externalize()
+                .let(repository::save)
+                .catch { awaitSingle() }.bind()
+                .internalize().bind()
+        }
 
-    override suspend fun deleteById(userId: User.Id.Valid): Either<Error, User<User.Id.Valid>> = either {
-        val user = getById(userId).bind()
-        repository
-            .deleteById(user.id())
-            .catch { awaitSingleOrNull() }.bind()
-        user
-    }
+    override suspend fun deleteById(userId: User.Id.Valid): Either<Error, User<User.Id.Valid>> =
+        either {
+            val user = getById(userId).bind()
+            repository
+                .deleteById(user.id())
+                .catch { awaitSingleOrNull() }.bind()
+            user
+        }
 }
 
 interface CassandraRepository : ReactiveCassandraRepository<UserEntity, UUID>

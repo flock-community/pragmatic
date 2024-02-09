@@ -13,35 +13,37 @@ import org.junit.jupiter.api.Test
 import java.util.UUID
 
 class UserControllerTest {
+    private val testRepository =
+        object : UserRepository {
+            override suspend fun getAll() =
+                User(
+                    User.Id.Valid(UUID.randomUUID()),
+                    FirstName("FirstName").getOrNull()!!,
+                    LastName("LastName").getOrNull()!!,
+                    BirthDay("2020-01-01").getOrNull()!!,
+                ).let(::flowOf).right()
 
-    private val testRepository = object : UserRepository {
+            override suspend fun getById(userId: User.Id.Valid) = TODO("Not yet implemented")
 
-        override suspend fun getAll() = User(
-            User.Id.Valid(UUID.randomUUID()),
-            FirstName("FirstName").getOrNull()!!,
-            LastName("LastName").getOrNull()!!,
-            BirthDay("2020-01-01").getOrNull()!!,
-        ).let(::flowOf).right()
+            override suspend fun save(user: User<User.Id.NonExisting>) = TODO("Not yet implemented")
 
-        override suspend fun getById(userId: User.Id.Valid) = TODO("Not yet implemented")
+            override suspend fun deleteById(userId: User.Id.Valid) = TODO("Not yet implemented")
+        }
 
-        override suspend fun save(user: User<User.Id.NonExisting>) = TODO("Not yet implemented")
-
-        override suspend fun deleteById(userId: User.Id.Valid) = TODO("Not yet implemented")
-    }
-
-    private val testLayer = object : UserControllerDependencies {
-        override val userRepository = testRepository
-    }
+    private val testLayer =
+        object : UserControllerDependencies {
+            override val userRepository = testRepository
+        }
 
     @Test
-    fun `UserController function getUsers should return a list of UserDto`(): Unit = runBlocking {
-        UserController(testLayer)
-            .getUsers()
-            .first()
-            .run {
-                firstName shouldBe "FirstName"
-                lastName shouldBe "LastName"
-            }
-    }
+    fun `UserController function getUsers should return a list of UserDto`(): Unit =
+        runBlocking {
+            UserController(testLayer)
+                .getUsers()
+                .first()
+                .run {
+                    firstName shouldBe "FirstName"
+                    lastName shouldBe "LastName"
+                }
+        }
 }

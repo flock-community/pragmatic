@@ -15,21 +15,23 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 
 @ControllerAdvice
 class AppExceptionHandler {
-
     @ExceptionHandler(AppException::class)
-    fun handleException(exception: AppException) = exception.run {
-        when (this) {
-            is BusinessException -> handle()
-            is TechnicalException -> internalServerError().body(message)
+    fun handleException(exception: AppException) =
+        exception.run {
+            when (this) {
+                is BusinessException -> handle()
+                is TechnicalException -> internalServerError().body(message)
+            }
         }
+}
+
+private fun BusinessException.handle() =
+    when (this) {
+        is DomainException -> error.handle()
+        is ValidationException -> badRequest().body(message)
     }
-}
 
-private fun BusinessException.handle() = when (this) {
-    is DomainException -> error.handle()
-    is ValidationException -> badRequest().body(message)
-}
-
-private fun DomainError.handle() = when (this) {
-    is UserNotFound -> notFound().build<String>()
-}
+private fun DomainError.handle() =
+    when (this) {
+        is UserNotFound -> notFound().build<String>()
+    }

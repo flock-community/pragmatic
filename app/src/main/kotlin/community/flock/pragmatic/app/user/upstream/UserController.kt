@@ -41,46 +41,54 @@ interface UserControllerDependencies : HasUserRepository
 @RestController
 @RequestMapping(USERS_PATH)
 class UserController(appLayer: UserControllerDependencies) : UserApi {
-
-    private val context = object : UserContext {
-        override val userRepository = appLayer.userRepository
-    }
+    private val context =
+        object : UserContext {
+            override val userRepository = appLayer.userRepository
+        }
 
     @GetMapping
-    override suspend fun getUsers() = either {
-        val users = context.getUsers().mapError().bind()
-        users.toList().produce()
-    }.handle()
+    override suspend fun getUsers() =
+        either {
+            val users = context.getUsers().mapError().bind()
+            users.toList().produce()
+        }.handle()
 
     @GetMapping(BY_ID_PATH)
-    override suspend fun getUserById(@PathVariable id: String) = either {
+    override suspend fun getUserById(
+        @PathVariable id: String,
+    ) = either {
         val uuid = id.validate().bind()
         val user = context.getUserById(User.Id.Valid(uuid)).mapError().bind()
         user.produce()
     }.handle()
 
     @PostMapping
-    override suspend fun postUser(@RequestBody potentialUser: PotentialUserDto) = either {
+    override suspend fun postUser(
+        @RequestBody potentialUser: PotentialUserDto,
+    ) = either {
         val user = potentialUser.validate().bind()
         val savedUser = context.saveUser(user).mapError().bind()
         savedUser.produce()
     }.handle()
 
     @DeleteMapping(BY_ID_PATH)
-    override suspend fun deleteUserById(@PathVariable("id") id: String) = either {
+    override suspend fun deleteUserById(
+        @PathVariable("id") id: String,
+    ) = either {
         val uuid = id.validate().bind()
         val user = context.deleteUserById(User.Id.Valid(uuid)).mapError().bind()
         user.produce()
     }.handle()
 
-    private fun <R> Either<Error, R>.mapError() = mapLeft {
-        when (it) {
-            is TechnicalError -> TechnicalException(cause = it.cause, message = it.message)
-            is ValidationError -> ValidationException(errors = listOf(it))
-            is ValidationErrors -> ValidationException(errors = it.errors)
-            is DomainError -> DomainException(error = it)
+    private fun <R> Either<Error, R>.mapError() =
+        mapLeft {
+            when (it) {
+                is TechnicalError -> TechnicalException(cause = it.cause, message = it.message)
+                is ValidationError -> ValidationException(errors = listOf(it))
+                is ValidationErrors -> ValidationException(errors = it.errors)
+                is DomainError -> DomainException(error = it)
+            }
         }
-    }
 
     private fun <R> Either<AppException, R>.handle() = getOrElse { throw it }
 }

@@ -3,7 +3,7 @@ package community.flock.pragmatic.app.user.downstream
 import arrow.core.getOrElse
 import com.datastax.oss.driver.api.core.CqlSession
 import community.flock.pragmatic.api.user.request.PotentialUserDto
-import community.flock.pragmatic.app.environment.cassandraDockerVersion
+import community.flock.pragmatic.app.environment.CASSANDRA_DOCKER_VERSION
 import community.flock.pragmatic.app.user.upstream.UserConsumer.validate
 import community.flock.pragmatic.domain.data.invoke
 import io.kotest.assertions.arrow.core.shouldBeRight
@@ -23,7 +23,6 @@ import org.testcontainers.junit.jupiter.Testcontainers
 @SpringBootTest
 @Testcontainers(disabledWithoutDocker = true)
 class LiveUserRepositoryTest {
-
     @Autowired
     private lateinit var userRepository: LiveUserRepository
 
@@ -38,21 +37,23 @@ class LiveUserRepositoryTest {
     @Nested
     inner class Repository {
         @Test
-        fun testLiveUserRepository(): Unit = runBlocking {
-            val user = PotentialUserDto(
-                firstName = "FirstName",
-                lastName = "LastName",
-                birthDay = "2020-01-01"
-            ).validate().getOrElse { throw it }
-            userRepository.save(user)
-            userRepository.getAll().shouldBeRight().toList().run {
-                size shouldBe 1
-                first().run {
-                    firstName() shouldBe "FirstName"
-                    lastName() shouldBe "LastName"
+        fun testLiveUserRepository(): Unit =
+            runBlocking {
+                val user =
+                    PotentialUserDto(
+                        firstName = "FirstName",
+                        lastName = "LastName",
+                        birthDay = "2020-01-01",
+                    ).validate().getOrElse { throw it }
+                userRepository.save(user)
+                userRepository.getAll().shouldBeRight().toList().run {
+                    size shouldBe 1
+                    first().run {
+                        firstName() shouldBe "FirstName"
+                        lastName() shouldBe "LastName"
+                    }
                 }
             }
-        }
     }
 
     companion object {
@@ -62,7 +63,7 @@ class LiveUserRepositoryTest {
 
         @Container
         @ServiceConnection
-        private val cassandra = CassandraContainer("cassandra:$cassandraDockerVersion")
+        private val cassandra = CassandraContainer("cassandra:$CASSANDRA_DOCKER_VERSION")
 
         @JvmStatic
         @BeforeAll
@@ -74,9 +75,10 @@ class LiveUserRepositoryTest {
             session().execute(CREATE_KEYSPACE_QUERY)
         }
 
-        private fun session() = CqlSession.builder()
-            .addContactPoint(cassandra.contactPoint)
-            .withLocalDatacenter(cassandra.localDatacenter)
-            .build()
+        private fun session() =
+            CqlSession.builder()
+                .addContactPoint(cassandra.contactPoint)
+                .withLocalDatacenter(cassandra.localDatacenter)
+                .build()
     }
 }

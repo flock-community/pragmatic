@@ -6,7 +6,6 @@ import community.flock.pragmatic.domain.user.model.User.Id
 interface UserContext : HasUserRepository
 
 object UserService {
-
     suspend fun UserContext.getUsers() = userRepository.getAll()
 
     suspend fun UserContext.getUserById(id: Id.Valid) = userRepository.getById(id)

@@ -9,13 +9,10 @@ import java.util.UUID
 data class UserEntity(
     @PrimaryKey("user_id")
     val userId: UUID,
-
     @field:Column("first_name")
     val firstName: String,
-
     @field:Column("last_name")
     val lastName: String,
-
     @field:Column("birth_day")
     val birthDay: String,
 )

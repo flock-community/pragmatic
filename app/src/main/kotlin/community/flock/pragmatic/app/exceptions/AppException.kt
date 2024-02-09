@@ -8,8 +8,10 @@ sealed class AppException(override val message: String, cause: Throwable? = null
 class TechnicalException(cause: Throwable, override val message: String) :
     AppException(message, cause) {
     companion object {
-        operator fun invoke(cause: Throwable, message: String? = null) =
-            TechnicalException(cause, message ?: "Technical Exception, check cause")
+        operator fun invoke(
+            cause: Throwable,
+            message: String? = null,
+        ) = TechnicalException(cause, message ?: "Technical Exception, check cause")
     }
 }
 

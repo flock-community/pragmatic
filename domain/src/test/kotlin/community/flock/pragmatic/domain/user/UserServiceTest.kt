@@ -13,27 +13,29 @@ import org.junit.jupiter.api.Test
 private interface TestContext : UserContext
 
 class UserServiceTest {
+    @Test
+    fun testUserService() =
+        inContext {
+            getUsers().shouldBeRight().toList().apply {
+                size shouldBe 1
+            }.first().apply {
+                firstName() shouldBe "FirstName"
+                lastName() shouldBe "LastName"
+            }
+        }
 
     @Test
-    fun testUserService() = inContext {
-        getUsers().shouldBeRight().toList().apply {
-            size shouldBe 1
-        }.first().apply {
-            firstName() shouldBe "FirstName"
-            lastName() shouldBe "LastName"
+    fun `UserService should yield correct user by id`() =
+        inContext {
+            getUserById(UserMother.userId).shouldBeRight().apply {
+                id shouldBe UserMother.userId
+            }
         }
-    }
 
-    @Test
-    fun `UserService should yield correct user by id`() = inContext {
-        getUserById(UserMother.userId).shouldBeRight().apply {
-            id shouldBe UserMother.userId
+    private fun inContext(test: suspend TestContext.() -> Unit) =
+        runBlocking {
+            object : TestContext {
+                override val userRepository = TestUserRepository()
+            }.test()
         }
-    }
-
-    private fun inContext(test: suspend TestContext.() -> Unit) = runBlocking {
-        object : TestContext {
-            override val userRepository = TestUserRepository()
-        }.test()
-    }
 }

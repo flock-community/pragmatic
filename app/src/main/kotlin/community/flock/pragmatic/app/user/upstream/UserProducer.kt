@@ -15,25 +15,28 @@ object UsersProducer : Producer<List<User<Id.Valid>>, List<UserDto>> {
 }
 
 object UserProducer : Producer<User<Id.Valid>, UserDto> {
-    override fun User<Id.Valid>.produce() = UserDto(
-        id = id().toString(),
-        firstName = firstName(),
-        lastName = lastName(),
-        birthDay = birthDay().format(ISO_LOCAL_DATE),
-    )
+    override fun User<Id.Valid>.produce() =
+        UserDto(
+            id = id().toString(),
+            firstName = firstName(),
+            lastName = lastName(),
+            birthDay = birthDay().format(ISO_LOCAL_DATE),
+        )
 }
 
 object WsUsersProducer : Producer<List<User<Id.Valid>>, List<WsUserDto>> {
-    override fun List<User<Id.Valid>>.produce() = with(WsUserProducer) {
-        map { it.produce() }
-    }
+    override fun List<User<Id.Valid>>.produce() =
+        with(WsUserProducer) {
+            map { it.produce() }
+        }
 }
 
 object WsUserProducer : Producer<User<Id.Valid>, WsUserDto> {
-    override fun User<Id.Valid>.produce() = WsUserDto(
-        id = UserIdentifier(id().toString()),
-        firstName = firstName(),
-        lastName = lastName(),
-        birthDate = birthDay().format(ISO_LOCAL_DATE)
-    )
+    override fun User<Id.Valid>.produce() =
+        WsUserDto(
+            id = UserIdentifier(id().toString()),
+            firstName = firstName(),
+            lastName = lastName(),
+            birthDate = birthDay().format(ISO_LOCAL_DATE),
+        )
 }

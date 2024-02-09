@@ -27,7 +27,7 @@
         <kotest-arrow.version>1.4.0</kotest-arrow.version>
         <kotest.version>5.8.0</kotest.version>
         <kotlin.version>1.9.22</kotlin.version>
-        <ktlint.version>0.42.0</ktlint.version>
+        <ktlint.version>1.1.1</ktlint.version>
         <wirespec.version>0.8.31</wirespec.version>
     </properties>
 
@@ -94,8 +94,8 @@
                     <version>${maven-antrun-plugin.version}</version>
                     <dependencies>
                         <dependency>
-                            <groupId>com.pinterest</groupId>
-                            <artifactId>ktlint</artifactId>
+                            <groupId>com.pinterest.ktlint</groupId>
+                            <artifactId>ktlint-cli</artifactId>
                             <version>${ktlint.version}</version>
                         </dependency>
                         <!-- additional 3rd party ruleset(s) can be specified here -->
@@ -109,11 +109,9 @@
                             <configuration>
                                 <target name="ktlint">
                                     <java classname="com.pinterest.ktlint.Main" classpathref="maven.plugin.classpath" dir="${basedir}" failonerror="true" fork="true" taskname="ktlint">
+                                        <jvmarg value="--add-opens=java.base/java.lang=ALL-UNNAMED"/>
                                         <arg value="-F"/>
-                                        <arg value="**/*.kt"/>
-                                        <jvmarg value="--add-opens"/>
-                                        <jvmarg value="java.base/java.lang=ALL-UNNAMED"/>
-                                        <!-- see https://pinterest.github.io/ktlint/install/cli/#command-line-usage for more information -->
+                                        <arg value="src/**/*.kt"/>
                                     </java>
                                 </target>
                             </configuration>
@@ -126,9 +124,8 @@
                             <phase>verify</phase>
                             <configuration>
                                 <target name="ktlint">
-                                    <java classname="com.pinterest.ktlint.Main" classpathref="maven.plugin.classpath" dir="${project.basedir}" failonerror="true" fork="true" taskname="ktlint">
+                                    <java classname="com.pinterest.ktlint.Main" classpathref="maven.plugin.classpath" dir="${basedir}" failonerror="true" fork="true" taskname="ktlint">
                                         <arg value="src/**/*.kt"/>
-                                        <!-- see https://pinterest.github.io/ktlint/install/cli/#command-line-usage for more information -->
                                     </java>
                                 </target>
                             </configuration>
