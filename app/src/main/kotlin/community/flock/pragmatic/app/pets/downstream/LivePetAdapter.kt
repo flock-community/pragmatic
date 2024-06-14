@@ -7,33 +7,33 @@ import community.flock.pragmatic.app.pets.downstream.WsPetInternalizer.internali
 import community.flock.pragmatic.app.wirespec.PetstoreClient
 import community.flock.pragmatic.domain.pet.PetAdapter
 import community.flock.pragmatic.domain.pet.model.Pet
-import community.flock.wirespec.petstore.AddPet
-import community.flock.wirespec.petstore.GetPetById
+import community.flock.wirespec.petstore.AddPetEndpoint
+import community.flock.wirespec.petstore.GetPetByIdEndpoint
 import community.flock.wirespec.petstore.PetStatus
 import org.springframework.stereotype.Component
 import community.flock.wirespec.petstore.Pet as ExternalPet
 
 @Component
 class LivePetAdapter(private val client: PetstoreClient) : PetAdapter {
-    override suspend fun getPetById(id: Int): Pet =
+    override suspend fun getPetById(id: Long): Pet =
         run {
-            val req = GetPetById.RequestUnit(id)
+            val req = GetPetByIdEndpoint.RequestUnit(id)
             when (val res = client.getPetById(req)) {
-                is GetPetById.Response200ApplicationJson -> res.content.body
-                is GetPetById.Response200ApplicationXml -> error("Something went wrong")
-                is GetPetById.Response400Unit -> error("Something went wrong")
-                is GetPetById.Response404Unit -> error("Something went wrong")
+                is GetPetByIdEndpoint.Response200ApplicationJson -> res.content.body
+                is GetPetByIdEndpoint.Response200ApplicationXml -> error("Something went wrong")
+                is GetPetByIdEndpoint.Response400Unit -> error("Something went wrong")
+                is GetPetByIdEndpoint.Response404Unit -> error("Something went wrong")
             }.internalize()
         }
 
     override suspend fun savePet(pet: Pet) =
         run {
-            val req = AddPet.RequestApplicationJson(pet.externalize())
+            val req = AddPetEndpoint.RequestApplicationJson(pet.externalize())
             val savedPet =
                 when (val res = client.addPet(req)) {
-                    is AddPet.Response200ApplicationJson -> res.content.body
-                    is AddPet.Response200ApplicationXml -> res.content.body
-                    is AddPet.Response405Unit -> error("Something went wrong")
+                    is AddPetEndpoint.Response200ApplicationJson -> res.content.body
+                    is AddPetEndpoint.Response200ApplicationXml -> res.content.body
+                    is AddPetEndpoint.Response405Unit -> error("Something went wrong")
                 }
             savedPet.internalize()
         }

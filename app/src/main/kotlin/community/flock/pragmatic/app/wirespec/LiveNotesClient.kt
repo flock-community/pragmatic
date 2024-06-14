@@ -1,27 +1,20 @@
 package community.flock.pragmatic.app.wirespec
 
 import community.flock.wirespec.Wirespec
-import community.flock.wirespec.petstore.AddPetEndpoint
-import community.flock.wirespec.petstore.FindPetsByStatusEndpoint
-import community.flock.wirespec.petstore.GetPetByIdEndpoint
+import community.flock.wirespec.generated.PostNoteEndpoint
 import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
 import java.net.URI
 
-interface PetstoreClient : AddPetEndpoint, GetPetByIdEndpoint, FindPetsByStatusEndpoint
+interface NotesClient : PostNoteEndpoint
 
 @Component
-class LivePetstoreClient(
+class LiveNotesClient(
     private val contentMapper: Wirespec.ContentMapper<ByteArray>,
     private val restTemplate: RestTemplate,
-) : PetstoreClient {
-    override suspend fun addPet(request: AddPetEndpoint.Request<*>) = handle(request, AddPetEndpoint::RESPONSE_MAPPER)
-
-    override suspend fun findPetsByStatus(request: FindPetsByStatusEndpoint.Request<*>) =
-        handle(request, FindPetsByStatusEndpoint::RESPONSE_MAPPER)
-
-    override suspend fun getPetById(request: GetPetByIdEndpoint.Request<*>) = handle(request, GetPetByIdEndpoint::RESPONSE_MAPPER)
+) : NotesClient {
+    override suspend fun postNote(request: PostNoteEndpoint.Request<*>) = handle(request, PostNoteEndpoint::RESPONSE_MAPPER)
 
     private fun <Req : Wirespec.Request<*>, Res : Wirespec.Response<*>> handle(
         request: Req,
