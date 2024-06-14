@@ -40,6 +40,8 @@ data class User<T : User.Id>(
 
 @JvmInline
 value class FirstName private constructor(override val value: String) : Value<String> {
+    override fun toString() = value
+
     companion object {
         operator fun invoke(s: String) =
             either {
@@ -51,6 +53,8 @@ value class FirstName private constructor(override val value: String) : Value<St
 
 @JvmInline
 value class LastName private constructor(override val value: String) : Value<String> {
+    override fun toString() = value
+
     companion object {
         operator fun invoke(s: String) =
             either {
@@ -62,6 +66,8 @@ value class LastName private constructor(override val value: String) : Value<Str
 
 @JvmInline
 value class BirthDay private constructor(override val value: LocalDate) : Value<LocalDate> {
+    override fun toString() = value.toString()
+
     companion object {
         operator fun invoke(s: String) =
             Either

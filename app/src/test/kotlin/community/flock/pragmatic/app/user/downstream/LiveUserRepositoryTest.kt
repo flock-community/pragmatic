@@ -5,7 +5,6 @@ import com.datastax.oss.driver.api.core.CqlSession
 import community.flock.pragmatic.api.user.request.PotentialUserDto
 import community.flock.pragmatic.app.environment.CASSANDRA_DOCKER_VERSION
 import community.flock.pragmatic.app.user.upstream.UserConsumer.validate
-import community.flock.pragmatic.domain.data.invoke
 import io.kotest.assertions.arrow.core.shouldBeRight
 import io.kotest.common.runBlocking
 import io.kotest.matchers.shouldBe
@@ -49,8 +48,8 @@ class LiveUserRepositoryTest {
                 userRepository.getAll().shouldBeRight().toList().run {
                     size shouldBe 1
                     first().run {
-                        firstName() shouldBe "FirstName"
-                        lastName() shouldBe "LastName"
+                        firstName.value shouldBe "FirstName"
+                        lastName.value shouldBe "LastName"
                     }
                 }
             }

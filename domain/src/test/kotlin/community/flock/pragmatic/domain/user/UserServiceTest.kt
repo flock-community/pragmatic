@@ -1,6 +1,5 @@
 package community.flock.pragmatic.domain.user
 
-import community.flock.pragmatic.domain.data.invoke
 import community.flock.pragmatic.domain.user.UserService.getUserById
 import community.flock.pragmatic.domain.user.UserService.getUsers
 import community.flock.pragmatic.domain.user.model.UserMother
@@ -19,8 +18,8 @@ class UserServiceTest {
             getUsers().shouldBeRight().toList().apply {
                 size shouldBe 1
             }.first().apply {
-                firstName() shouldBe "FirstName"
-                lastName() shouldBe "LastName"
+                firstName.value shouldBe "FirstName"
+                lastName.value shouldBe "LastName"
             }
         }
 

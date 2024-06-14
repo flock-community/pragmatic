@@ -3,7 +3,6 @@ package community.flock.pragmatic.app.user.upstream
 import community.flock.pragmatic.api.user.response.UserDto
 import community.flock.pragmatic.app.common.Producer
 import community.flock.pragmatic.app.user.upstream.UserProducer.produce
-import community.flock.pragmatic.domain.data.invoke
 import community.flock.pragmatic.domain.user.model.User
 import community.flock.pragmatic.domain.user.model.User.Id
 import community.flock.wirespec.generated.UserIdentifier
@@ -17,10 +16,10 @@ object UsersProducer : Producer<List<User<Id.Valid>>, List<UserDto>> {
 object UserProducer : Producer<User<Id.Valid>, UserDto> {
     override fun User<Id.Valid>.produce() =
         UserDto(
-            id = id().toString(),
-            firstName = firstName(),
-            lastName = lastName(),
-            birthDay = birthDay().format(ISO_LOCAL_DATE),
+            id = id.value.toString(),
+            firstName = firstName.value,
+            lastName = lastName.value,
+            birthDay = birthDay.value.format(ISO_LOCAL_DATE),
         )
 }
 
@@ -34,9 +33,9 @@ object WsUsersProducer : Producer<List<User<Id.Valid>>, List<WsUserDto>> {
 object WsUserProducer : Producer<User<Id.Valid>, WsUserDto> {
     override fun User<Id.Valid>.produce() =
         WsUserDto(
-            id = UserIdentifier(id().toString()),
-            firstName = firstName(),
-            lastName = lastName(),
-            birthDate = birthDay().format(ISO_LOCAL_DATE),
+            id = UserIdentifier(id.value.toString()),
+            firstName = firstName.value,
+            lastName = lastName.value,
+            birthDate = birthDay.value.format(ISO_LOCAL_DATE),
         )
 }

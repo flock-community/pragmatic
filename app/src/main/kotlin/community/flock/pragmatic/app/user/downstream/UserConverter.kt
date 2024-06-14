@@ -5,7 +5,6 @@ import arrow.core.raise.either
 import arrow.core.raise.zipOrAccumulate
 import community.flock.pragmatic.app.common.Externalizer
 import community.flock.pragmatic.app.common.Internalizer
-import community.flock.pragmatic.domain.data.invoke
 import community.flock.pragmatic.domain.error.ValidationErrors
 import community.flock.pragmatic.domain.user.model.BirthDay
 import community.flock.pragmatic.domain.user.model.FirstName
@@ -33,8 +32,8 @@ object UserExternalizer : Externalizer<User<User.Id.NonExisting>, UserEntity> {
     override fun User<User.Id.NonExisting>.externalize() =
         UserEntity(
             userId = UUID.randomUUID(),
-            firstName = firstName(),
-            lastName = lastName(),
-            birthDay = birthDay().format(ISO_LOCAL_DATE),
+            firstName = firstName.value,
+            lastName = lastName.value,
+            birthDay = birthDay.value.format(ISO_LOCAL_DATE),
         )
 }
