@@ -3,14 +3,15 @@ options=-Drevision=$(version) -Pfix
 
 .PHONY: *
 
+# The first command will be invoked with `make` only
+build:
+	docker info && ./mvnw clean verify $(options)
+
 clean:
 	./mvnw clean $(options)
 
 compile:
 	./mvnw clean test-compile $(options)
-
-build:
-	docker info && ./mvnw clean verify $(options)
 
 test:
 	docker info && ./mvnw clean test $(options)

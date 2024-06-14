@@ -6,7 +6,6 @@ import arrow.core.raise.ensureNotNull
 import community.flock.pragmatic.app.common.catch
 import community.flock.pragmatic.app.user.downstream.UserExternalizer.externalize
 import community.flock.pragmatic.app.user.downstream.UserInternalizer.internalize
-import community.flock.pragmatic.domain.data.invoke
 import community.flock.pragmatic.domain.error.Error
 import community.flock.pragmatic.domain.error.UserNotFound
 import community.flock.pragmatic.domain.user.UserRepository
@@ -33,7 +32,7 @@ class LiveUserRepository(private val repository: CassandraRepository) : UserRepo
         either {
             val maybeUser =
                 repository
-                    .findById(userId())
+                    .findById(userId.value)
                     .catch { awaitSingleOrNull() }
                     .bind()
             val user = ensureNotNull(maybeUser) { UserNotFound(userId) }
@@ -52,7 +51,7 @@ class LiveUserRepository(private val repository: CassandraRepository) : UserRepo
         either {
             val user = getById(userId).bind()
             repository
-                .deleteById(user.id())
+                .deleteById(user.id.value)
                 .catch { awaitSingleOrNull() }.bind()
             user
         }
