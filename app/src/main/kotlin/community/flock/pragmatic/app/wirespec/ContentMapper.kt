@@ -6,7 +6,9 @@ import org.springframework.stereotype.Component
 import java.lang.reflect.Type
 
 @Component
-class ContentMapper(private val objectMapper: ObjectMapper) : Wirespec.ContentMapper<ByteArray> {
+class ContentMapper(
+    private val objectMapper: ObjectMapper,
+) : Wirespec.ContentMapper<ByteArray> {
     override fun <T> read(
         content: Wirespec.Content<ByteArray>,
         valueType: Type,

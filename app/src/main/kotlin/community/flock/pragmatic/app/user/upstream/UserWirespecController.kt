@@ -34,7 +34,9 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/wirespec/users")
-class UserWirespecController(appLayer: UserControllerDependencies) {
+class UserWirespecController(
+    appLayer: UserControllerDependencies,
+) {
     private val context =
         object : UserContext {
             override val userRepository = appLayer.userRepository

@@ -15,12 +15,15 @@ class UserServiceTest {
     @Test
     fun testUserService() =
         inContext {
-            getUsers().shouldBeRight().toList().apply {
-                size shouldBe 1
-            }.first().apply {
-                firstName.value shouldBe "FirstName"
-                lastName.value shouldBe "LastName"
-            }
+            getUsers()
+                .shouldBeRight()
+                .toList()
+                .apply { size shouldBe 1 }
+                .first()
+                .apply {
+                    firstName.value shouldBe "FirstName"
+                    lastName.value shouldBe "LastName"
+                }
         }
 
     @Test

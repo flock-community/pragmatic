@@ -20,11 +20,15 @@ import org.springframework.stereotype.Component
 import java.util.UUID
 
 @Component
-class LiveUserRepository(private val repository: CassandraRepository) : UserRepository {
+class LiveUserRepository(
+    private val repository: CassandraRepository,
+) : UserRepository {
     override suspend fun getAll(): Either<Error, Flow<User<User.Id.Valid>>> =
         either {
-            repository.findAll()
-                .catch { asFlow() }.bind()
+            repository
+                .findAll()
+                .catch { asFlow() }
+                .bind()
                 .map { it.internalize().bind() }
         }
 
@@ -41,10 +45,13 @@ class LiveUserRepository(private val repository: CassandraRepository) : UserRepo
 
     override suspend fun save(user: User<User.Id.NonExisting>): Either<Error, User<User.Id.Valid>> =
         either {
-            user.externalize()
+            user
+                .externalize()
                 .let(repository::save)
-                .catch { awaitSingle() }.bind()
-                .internalize().bind()
+                .catch { awaitSingle() }
+                .bind()
+                .internalize()
+                .bind()
         }
 
     override suspend fun deleteById(userId: User.Id.Valid): Either<Error, User<User.Id.Valid>> =
@@ -52,7 +59,8 @@ class LiveUserRepository(private val repository: CassandraRepository) : UserRepo
             val user = getById(userId).bind()
             repository
                 .deleteById(user.id.value)
-                .catch { awaitSingleOrNull() }.bind()
+                .catch { awaitSingleOrNull() }
+                .bind()
             user
         }
 }

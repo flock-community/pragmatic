@@ -14,7 +14,9 @@ import org.springframework.stereotype.Component
 import community.flock.wirespec.petstore.Pet as ExternalPet
 
 @Component
-class LivePetAdapter(private val client: PetstoreClient) : PetAdapter {
+class LivePetAdapter(
+    private val client: PetstoreClient,
+) : PetAdapter {
     override suspend fun getPetById(id: Long): Pet =
         run {
             val req = GetPetByIdEndpoint.RequestUnit(id)

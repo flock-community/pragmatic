@@ -9,7 +9,10 @@ import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
 import java.net.URI
 
-interface PetstoreClient : AddPetEndpoint, GetPetByIdEndpoint, FindPetsByStatusEndpoint
+interface PetstoreClient :
+    AddPetEndpoint,
+    GetPetByIdEndpoint,
+    FindPetsByStatusEndpoint
 
 @Component
 class LivePetstoreClient(

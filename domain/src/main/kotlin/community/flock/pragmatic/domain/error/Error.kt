@@ -7,7 +7,8 @@ sealed interface Error {
 class TechnicalError(
     override val cause: Throwable,
     override val message: String,
-) : Error, RuntimeException(message, cause) {
+) : RuntimeException(message, cause),
+    Error {
     companion object {
         operator fun invoke(
             cause: Throwable,
@@ -16,12 +17,18 @@ class TechnicalError(
     }
 }
 
-sealed class DomainError(override val message: String) : Error
+sealed class DomainError(
+    override val message: String,
+) : Error
 
-sealed class ValidationError(override val message: String) : Error {
+sealed class ValidationError(
+    override val message: String,
+) : Error {
     data object UUIDError : ValidationError("Not a valid UUID")
 }
 
-class ValidationErrors(val errors: List<ValidationError>) : Error {
+class ValidationErrors(
+    val errors: List<ValidationError>,
+) : Error {
     override val message = "Multiple Validation Errors: ${errors.joinToString { it.message }}"
 }

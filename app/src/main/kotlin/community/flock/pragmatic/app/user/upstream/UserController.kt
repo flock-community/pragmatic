@@ -40,7 +40,9 @@ interface UserControllerDependencies : HasUserRepository
 
 @RestController
 @RequestMapping(USERS_PATH)
-class UserController(appLayer: UserControllerDependencies) : UserApi {
+class UserController(
+    appLayer: UserControllerDependencies,
+) : UserApi {
     private val context =
         object : UserContext {
             override val userRepository = appLayer.userRepository

@@ -4,7 +4,9 @@ package community.flock.pragmatic.app.common
  * Placeholder interface to define downstream converters.
  * (i.e. used by adapter or repository implementations)
  */
-interface Converter<DOMAIN : Any, EXTERNAL : Any> : Externalizer<DOMAIN, EXTERNAL>, Internalizer<EXTERNAL, DOMAIN>
+interface Converter<DOMAIN : Any, EXTERNAL : Any> :
+    Externalizer<DOMAIN, EXTERNAL>,
+    Internalizer<EXTERNAL, DOMAIN>
 
 interface Externalizer<DOMAIN : Any, EXTERNAL : Any> {
     fun DOMAIN.externalize(): EXTERNAL
