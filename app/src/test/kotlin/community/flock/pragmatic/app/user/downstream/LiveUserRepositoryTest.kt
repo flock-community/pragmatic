@@ -75,7 +75,8 @@ class LiveUserRepositoryTest {
         }
 
         private fun session() =
-            CqlSession.builder()
+            CqlSession
+                .builder()
                 .addContactPoint(cassandra.contactPoint)
                 .withLocalDatacenter(cassandra.localDatacenter)
                 .build()

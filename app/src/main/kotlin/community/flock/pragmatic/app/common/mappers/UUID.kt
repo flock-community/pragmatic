@@ -19,7 +19,8 @@ object UUIDProducer : Producer<UUID, String> {
 
 object UUIDConsumer : Validator<UUIDError, String, UUID> {
     override fun String.consume(): EitherNel<UUIDError, UUID> =
-        Either.catch { UUID.fromString(this) }
+        Either
+            .catch { UUID.fromString(this) }
             .mapLeft { UUIDError.nel() }
 }
 

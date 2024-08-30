@@ -6,7 +6,6 @@
         <groupId>community.flock.pragmatic</groupId>
         <artifactId>spi</artifactId>
         <version>${revision}</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>petstore</artifactId>

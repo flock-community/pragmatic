@@ -6,7 +6,6 @@
         <groupId>community.flock.pragmatic</groupId>
         <artifactId>demo</artifactId>
         <version>${revision}</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>spi</artifactId>
@@ -74,11 +73,11 @@
                         <execution>
                             <id>kotlin-v2</id>
                             <goals>
-                                <goal>generate</goal>
+                                <goal>convert</goal>
                             </goals>
                             <configuration>
                                 <output>${project.build.directory}/generated-sources/wirespec/src/main/kotlin</output>
-                                <openapi>v3</openapi>
+                                <format>OpenApiV3</format>
                                 <languages>
                                     <language>Kotlin</language>
                                 </languages>

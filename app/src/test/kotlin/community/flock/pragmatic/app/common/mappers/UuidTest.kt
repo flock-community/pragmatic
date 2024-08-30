@@ -40,7 +40,8 @@ class UuidTest {
 
         @Test
         fun `incorrect uuid string`() {
-            "wrong".consume()
+            "wrong"
+                .consume()
                 .shouldBeLeft() shouldContain UUIDError
         }
     }
@@ -64,7 +65,8 @@ class UuidTest {
 
         @Test
         fun `incorrect uuid string`() {
-            "wrong".internalize()
+            "wrong"
+                .internalize()
                 .shouldBeLeft()
                 .shouldBeInstanceOf<TechnicalException>()
                 .cause

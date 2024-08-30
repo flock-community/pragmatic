@@ -6,7 +6,6 @@
         <groupId>community.flock.pragmatic</groupId>
         <artifactId>demo</artifactId>
         <version>${revision}</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>api</artifactId>
@@ -16,7 +15,7 @@
         <javax.version>2.1.1</javax.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <swagger-maven-plugin.version>3.1.8</swagger-maven-plugin.version>
-        <swagger.version>1.6.11</swagger.version>
+        <swagger.version>1.6.14</swagger.version>
     </properties>
 
     <dependencies>
@@ -88,7 +87,7 @@
                     <execution>
                         <id>kotlin</id>
                         <goals>
-                            <goal>generate</goal>
+                            <goal>compile</goal>
                         </goals>
                         <configuration>
                             <input>${project.basedir}/src/main/wirespec</input>

@@ -7,4 +7,6 @@ import org.springframework.stereotype.Component
 interface AppLayer : UserControllerDependencies
 
 @Component
-class LiveLayer(override val userRepository: UserRepository) : AppLayer
+class LiveLayer(
+    override val userRepository: UserRepository,
+) : AppLayer
