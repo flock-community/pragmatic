@@ -16,12 +16,12 @@ import community.flock.pragmatic.domain.error.Error
 import community.flock.pragmatic.domain.error.TechnicalError
 import community.flock.pragmatic.domain.error.ValidationError
 import community.flock.pragmatic.domain.error.ValidationErrors
-import community.flock.pragmatic.domain.user.UserContext
-import community.flock.pragmatic.domain.user.UserService.deleteUserById
-import community.flock.pragmatic.domain.user.UserService.getUserById
-import community.flock.pragmatic.domain.user.UserService.getUsers
-import community.flock.pragmatic.domain.user.UserService.saveUser
+import community.flock.pragmatic.domain.user.UserService
+import community.flock.pragmatic.domain.user.deleteUserById
+import community.flock.pragmatic.domain.user.getUserById
+import community.flock.pragmatic.domain.user.getUsers
 import community.flock.pragmatic.domain.user.model.User
+import community.flock.pragmatic.domain.user.saveUser
 import community.flock.wirespec.generated.WsPotentialUserDto
 import kotlinx.coroutines.flow.toList
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -37,15 +37,15 @@ import org.springframework.web.bind.annotation.RestController
 class UserWirespecController(
     appLayer: UserControllerDependencies,
 ) {
-    private val context =
-        object : UserContext {
+    private val userService =
+        object : UserService {
             override val userRepository = appLayer.userRepository
         }
 
     @GetMapping
     suspend fun getUsers() =
         either {
-            val users = context.getUsers().mapError().bind()
+            val users = userService.getUsers().mapError().bind()
             users.toList().produce()
         }.handle()
 
@@ -54,7 +54,7 @@ class UserWirespecController(
         @PathVariable id: String,
     ) = either {
         val uuid = id.validate().bind()
-        val user = context.getUserById(User.Id.Valid(uuid)).mapError().bind()
+        val user = userService.getUserById(User.Id.Valid(uuid)).mapError().bind()
         user.produce()
     }.handle()
 
@@ -63,7 +63,7 @@ class UserWirespecController(
         @RequestBody potentialUser: WsPotentialUserDto,
     ) = either {
         val user = potentialUser.validate().bind()
-        val savedUser = context.saveUser(user).mapError().bind()
+        val savedUser = userService.saveUser(user).mapError().bind()
         with(WsUserProducer) { savedUser.produce() }
     }.handle()
 
@@ -72,7 +72,7 @@ class UserWirespecController(
         @PathVariable("id") id: String,
     ) = either {
         val uuid = id.validate().bind()
-        val user = context.deleteUserById(User.Id.Valid(uuid)).mapError().bind()
+        val user = userService.deleteUserById(User.Id.Valid(uuid)).mapError().bind()
         user.produce()
     }.handle()
 
