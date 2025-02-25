@@ -1,4 +1,4 @@
-package community.flock.pragmatic.app.user.upstream
+package community.flock.pragmatic.app.user.web
 
 import arrow.core.right
 import community.flock.pragmatic.domain.user.UserRepository

@@ -1,11 +1,11 @@
-package community.flock.pragmatic.app.user.downstream
+package community.flock.pragmatic.app.user.database
 
 import arrow.core.Either
 import arrow.core.raise.either
 import arrow.core.raise.ensureNotNull
 import community.flock.pragmatic.app.common.catch
-import community.flock.pragmatic.app.user.downstream.UserExternalizer.externalize
-import community.flock.pragmatic.app.user.downstream.UserInternalizer.internalize
+import community.flock.pragmatic.app.user.database.UserExternalizer.externalize
+import community.flock.pragmatic.app.user.database.UserInternalizer.internalize
 import community.flock.pragmatic.domain.error.Error
 import community.flock.pragmatic.domain.error.UserNotFound
 import community.flock.pragmatic.domain.user.UserRepository

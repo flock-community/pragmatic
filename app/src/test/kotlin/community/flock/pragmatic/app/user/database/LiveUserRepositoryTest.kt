@@ -1,10 +1,10 @@
-package community.flock.pragmatic.app.user.downstream
+package community.flock.pragmatic.app.user.database
 
 import arrow.core.getOrElse
 import com.datastax.oss.driver.api.core.CqlSession
 import community.flock.pragmatic.api.user.request.PotentialUserDto
 import community.flock.pragmatic.app.environment.CASSANDRA_DOCKER_VERSION
-import community.flock.pragmatic.app.user.upstream.UserConsumer.validate
+import community.flock.pragmatic.app.user.web.UserConsumer.validate
 import io.kotest.assertions.arrow.core.shouldBeRight
 import io.kotest.common.runBlocking
 import io.kotest.matchers.shouldBe

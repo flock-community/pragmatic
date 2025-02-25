@@ -1,4 +1,4 @@
-package community.flock.pragmatic.app.user.downstream
+package community.flock.pragmatic.app.user.database
 
 import org.springframework.data.cassandra.core.mapping.Column
 import org.springframework.data.cassandra.core.mapping.PrimaryKey

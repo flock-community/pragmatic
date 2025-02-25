@@ -26,19 +26,6 @@ data class User<T : User.Id>(
 
         data object NonExisting : Id
     }
-
-    companion object {
-        operator fun invoke(
-            firstName: FirstName,
-            lastName: LastName,
-            birthDay: BirthDay,
-        ) = User(
-            id = Id.NonExisting,
-            firstName = firstName,
-            lastName = lastName,
-            birthDay = birthDay,
-        )
-    }
 }
 
 @JvmInline

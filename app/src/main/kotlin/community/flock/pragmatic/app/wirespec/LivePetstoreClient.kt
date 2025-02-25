@@ -22,14 +22,12 @@ class LivePetstoreClient(
     private val contentMapper: Wirespec.ContentMapper<String>,
     private val restTemplate: RestTemplate,
 ) : PetstoreClient {
-    override suspend fun addPet(request: AddPetEndpoint.Request<*>) =
-        handle(request, AddPetEndpoint::RESPONSE_MAPPER)
+    override suspend fun addPet(request: AddPetEndpoint.Request<*>) = handle(request, AddPetEndpoint::RESPONSE_MAPPER)
 
     override suspend fun findPetsByStatus(request: FindPetsByStatusEndpoint.Request<*>) =
         handle(request, FindPetsByStatusEndpoint::RESPONSE_MAPPER)
 
-    override suspend fun getPetById(request: GetPetByIdEndpoint.Request<*>) =
-        handle(request, GetPetByIdEndpoint::RESPONSE_MAPPER)
+    override suspend fun getPetById(request: GetPetByIdEndpoint.Request<*>) = handle(request, GetPetByIdEndpoint::RESPONSE_MAPPER)
 
     private fun <Req : Wirespec.Request<*>, Res : Wirespec.Response<*>> handle(
         request: Req,

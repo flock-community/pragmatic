@@ -1,8 +1,8 @@
-package community.flock.pragmatic.app.user.upstream
+package community.flock.pragmatic.app.user.web
 
 import community.flock.pragmatic.api.user.response.UserDto
 import community.flock.pragmatic.app.common.Producer
-import community.flock.pragmatic.app.user.upstream.UserProducer.produce
+import community.flock.pragmatic.app.user.web.UserProducer.produce
 import community.flock.pragmatic.domain.user.model.User
 import community.flock.pragmatic.domain.user.model.User.Id
 import community.flock.wirespec.generated.UserIdentifier
