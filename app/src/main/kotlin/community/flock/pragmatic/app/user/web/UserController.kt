@@ -3,10 +3,7 @@ package community.flock.pragmatic.app.user.web
 import arrow.core.Either
 import arrow.core.getOrElse
 import arrow.core.raise.either
-import community.flock.pragmatic.api.user.UserApi
-import community.flock.pragmatic.api.user.UserApi.Companion.BY_ID_PATH
-import community.flock.pragmatic.api.user.UserApi.Companion.USERS_PATH
-import community.flock.pragmatic.api.user.request.PotentialUserDto
+import community.flock.pragmatic.api.wirespec.PotentialUserDto
 import community.flock.pragmatic.app.common.mappers.UUIDConsumer.validate
 import community.flock.pragmatic.app.exceptions.AppException
 import community.flock.pragmatic.app.exceptions.DomainException
@@ -39,24 +36,24 @@ import org.springframework.web.bind.annotation.RestController
 interface UserControllerDependencies : HasUserRepository
 
 @RestController
-@RequestMapping(USERS_PATH)
+@RequestMapping("/api/users")
 class UserController(
     appLayer: UserControllerDependencies,
-) : UserApi {
+) {
     private val userService =
         object : UserService {
             override val userRepository = appLayer.userRepository
         }
 
     @GetMapping
-    override suspend fun getUsers() =
+    suspend fun getUsers() =
         either {
             val users = userService.getUsers().mapError().bind()
             users.toList().produce()
         }.handle()
 
-    @GetMapping(BY_ID_PATH)
-    override suspend fun getUserById(
+    @GetMapping("/{id}")
+    suspend fun getUserById(
         @PathVariable id: String,
     ) = either {
         val uuid = id.validate().bind()
@@ -65,16 +62,16 @@ class UserController(
     }.handle()
 
     @PostMapping
-    override suspend fun postUser(
+    suspend fun postUser(
         @RequestBody potentialUser: PotentialUserDto,
     ) = either {
         val user = potentialUser.validate().bind()
         val savedUser = userService.saveUser(user).mapError().bind()
-        savedUser.produce()
+        with(UserProducer) { savedUser.produce() }
     }.handle()
 
-    @DeleteMapping(BY_ID_PATH)
-    override suspend fun deleteUserById(
+    @DeleteMapping("/{id}")
+    suspend fun deleteUserById(
         @PathVariable("id") id: String,
     ) = either {
         val uuid = id.validate().bind()

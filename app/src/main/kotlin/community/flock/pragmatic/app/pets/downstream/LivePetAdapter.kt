@@ -18,18 +18,16 @@ class LivePetAdapter(
     private val client: PetstoreClient,
 ) : PetAdapter {
     override suspend fun getPetById(id: Long): Pet =
-        when (val res = client.getPetById(GetPetByIdEndpoint.RequestUnit(id))) {
-            is GetPetByIdEndpoint.Response200ApplicationJson -> res.content.body
-            is GetPetByIdEndpoint.Response200ApplicationXml -> error("Something went wrong")
-            is GetPetByIdEndpoint.Response400Unit -> error("Something went wrong")
-            is GetPetByIdEndpoint.Response404Unit -> error("Something went wrong")
+        when (val res = client.getPetById(GetPetByIdEndpoint.Request(id))) {
+            is GetPetByIdEndpoint.Response200 -> res.body
+            is GetPetByIdEndpoint.Response400 -> error("Something went wrong")
+            is GetPetByIdEndpoint.Response404 -> error("Something went wrong")
         }.internalize()
 
     override suspend fun savePet(pet: Pet) =
-        when (val res = client.addPet(AddPetEndpoint.RequestApplicationJson(pet.externalize()))) {
-            is AddPetEndpoint.Response200ApplicationJson -> res.content.body
-            is AddPetEndpoint.Response200ApplicationXml -> res.content.body
-            is AddPetEndpoint.Response405Unit -> error("Something went wrong")
+        when (val res = client.addPet(AddPetEndpoint.Request(pet.externalize()))) {
+            is AddPetEndpoint.Response200 -> res.body
+            is AddPetEndpoint.Response405 -> error("Something went wrong")
         }.internalize()
 }
 
@@ -49,5 +47,7 @@ object WsPetExternalizer : Externalizer<Pet, ExternalPet> {
             name = name,
             status = PetStatus.valueOf(status),
             photoUrls = emptyList(),
+            category = null,
+            tags = null,
         )
 }

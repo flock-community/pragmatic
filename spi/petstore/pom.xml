@@ -10,26 +10,14 @@
 
     <artifactId>petstore</artifactId>
 
-    <properties>
-        <petstore-api.version>1.0.6</petstore-api.version>
-    </properties>
-
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.openapitools</groupId>
-                <artifactId>openapi-generator-maven-plugin</artifactId>
-                <configuration>
-                    <modelPackage>community.flock.pragmatic.spi.petstore.model</modelPackage>
-                    <inputSpec>${project.basedir}/src/main/resources/petstore-${petstore-api.version}.json</inputSpec>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>community.flock.wirespec.plugin.maven</groupId>
                 <artifactId>wirespec-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>kotlin-v2</id>
+                        <id>kotlin</id>
                         <configuration>
                             <input>${project.basedir}/src/main/resources/petstore.json</input>
                             <packageName>community.flock.wirespec.petstore</packageName>
@@ -39,5 +27,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

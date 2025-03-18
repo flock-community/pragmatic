@@ -92,6 +92,7 @@
                         <configuration>
                             <input>${project.basedir}/src/main/wirespec</input>
                             <output>${project.build.directory}/generated-sources/kotlin</output>
+                            <packageName>community.flock.pragmatic.api.wirespec</packageName>
                             <languages>
                                 <language>Kotlin</language>
                             </languages>

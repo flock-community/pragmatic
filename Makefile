@@ -1,25 +1,27 @@
 version=0.0.1-SNAPSHOT
-options=-Drevision=$(version) -Pfix
+options=-Drevision=$(version)
 
 .PHONY: *
 
 # The first command will be invoked with `make` only
-build: docker clean
-	./mvnw verify $(options)
+build: docker
+	./mvnw verify -Pformat $(options)
+
+all: docker clean build
 
 clean:
 	./mvnw clean $(options)
 
-compile: clean
-	./mvnw test-compile $(options)
-
 docker:
 	docker info
+
+format:
+	./mvnw test-compile $(options)
 
 run: docker
 	java -jar app/target/app-*.jar
 
-test: docker clean
+test: docker
 	./mvnw test $(options)
 
 update:

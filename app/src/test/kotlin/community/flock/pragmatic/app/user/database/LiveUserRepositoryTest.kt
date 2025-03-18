@@ -2,11 +2,11 @@ package community.flock.pragmatic.app.user.database
 
 import arrow.core.getOrElse
 import com.datastax.oss.driver.api.core.CqlSession
-import community.flock.pragmatic.api.user.request.PotentialUserDto
+import community.flock.pragmatic.api.wirespec.PotentialUserDto
 import community.flock.pragmatic.app.environment.CASSANDRA_DOCKER_VERSION
 import community.flock.pragmatic.app.user.web.UserConsumer.validate
 import io.kotest.assertions.arrow.core.shouldBeRight
-import io.kotest.common.runBlocking
+import io.kotest.engine.runBlocking
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.flow.toList
 import org.junit.jupiter.api.BeforeAll
@@ -42,7 +42,7 @@ class LiveUserRepositoryTest {
                     PotentialUserDto(
                         firstName = "FirstName",
                         lastName = "LastName",
-                        birthDay = "2020-01-01",
+                        birthDate = "2020-01-01",
                     ).validate().getOrElse { throw it }
                 userRepository.save(user)
                 userRepository.getAll().shouldBeRight().toList().run {

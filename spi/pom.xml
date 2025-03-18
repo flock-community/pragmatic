@@ -16,10 +16,6 @@
         <module>petstore</module>
     </modules>
 
-    <properties>
-        <openapi-generator.version>6.4.0</openapi-generator.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
@@ -36,48 +32,20 @@
     <build>
         <pluginManagement>
             <plugins>
-                <!--                <plugin>-->
-                <!--                    <groupId>org.openapitools</groupId>-->
-                <!--                    <artifactId>openapi-generator-maven-plugin</artifactId>-->
-                <!--                    <version>${openapi-generator.version}</version>-->
-                <!--                    <configuration>-->
-                <!--                        <generatorName>kotlin</generatorName>-->
-                <!--                        <library>jvm-ktor</library>-->
-                <!--                        <generateModelTests>false</generateModelTests>-->
-                <!--                        <generateModelDocumentation>false</generateModelDocumentation>-->
-                <!--                        <generateApis>false</generateApis>-->
-                <!--                        <supportingFilesToGenerate>JSON.java,RFC3339DateFormat.java</supportingFilesToGenerate>-->
-                <!--                        <configOptions>-->
-                <!--                            <dateLibrary>java8</dateLibrary>-->
-                <!--                            <serializationLibrary>jackson</serializationLibrary>-->
-                <!--                            <enumPropertyNaming>UPPERCASE</enumPropertyNaming>-->
-                <!--                        </configOptions>-->
-                <!--                        <typeMappings>-->
-                <!--                            <typeMapping>float=java.math.BigDecimal</typeMapping>-->
-                <!--                            <typeMapping>double=java.math.BigDecimal</typeMapping>-->
-                <!--                        </typeMappings>-->
-                <!--                    </configuration>-->
-                <!--                    <executions>-->
-                <!--                        <execution>-->
-                <!--                            <goals>-->
-                <!--                                <goal>generate</goal>-->
-                <!--                            </goals>-->
-                <!--                        </execution>-->
-                <!--                    </executions>-->
-                <!--                </plugin>-->
                 <plugin>
                     <groupId>community.flock.wirespec.plugin.maven</groupId>
                     <artifactId>wirespec-maven-plugin</artifactId>
                     <version>${wirespec.version}</version>
                     <executions>
                         <execution>
-                            <id>kotlin-v2</id>
+                            <id>kotlin</id>
                             <goals>
                                 <goal>convert</goal>
                             </goals>
                             <configuration>
+                                <input>${project.basedir}/src/main/resources/*.json</input>
                                 <output>${project.build.directory}/generated-sources/wirespec/src/main/kotlin</output>
-                                <format>OpenApiV3</format>
+                                <format>OpenAPIV3</format>
                                 <languages>
                                     <language>Kotlin</language>
                                 </languages>
