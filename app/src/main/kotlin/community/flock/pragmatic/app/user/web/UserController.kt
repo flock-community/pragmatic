@@ -3,7 +3,7 @@ package community.flock.pragmatic.app.user.web
 import arrow.core.Either
 import arrow.core.getOrElse
 import arrow.core.raise.either
-import community.flock.pragmatic.api.wirespec.PotentialUserDto
+import community.flock.pragmatic.api.wirespec.model.PotentialUserDto
 import community.flock.pragmatic.app.common.mappers.UUIDConsumer.validate
 import community.flock.pragmatic.app.exceptions.AppException
 import community.flock.pragmatic.app.exceptions.DomainException
@@ -72,7 +72,7 @@ class UserController(
 
     @DeleteMapping("/{id}")
     suspend fun deleteUserById(
-        @PathVariable("id") id: String,
+        @PathVariable id: String,
     ) = either {
         val uuid = id.validate().bind()
         val user = userService.deleteUserById(User.Id.Valid(uuid)).mapError().bind()

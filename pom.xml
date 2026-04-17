@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.3</version>
+        <version>3.5.10</version>
     </parent>
 
     <groupId>community.flock.pragmatic</groupId>
@@ -22,17 +22,43 @@
     </modules>
 
     <properties>
-        <arrow.version>2.0.1</arrow.version>
+        <arrow.version>2.2.2.1</arrow.version>
+        <dependency-analyze.strict>false</dependency-analyze.strict>
         <java.version>21</java.version>
-        <kotest-arrow.version>2.0.0</kotest-arrow.version>
-        <kotest.version>6.0.0.M2</kotest.version>
-        <kotlin.version>2.1.20-RC3</kotlin.version>
-        <ktlint.version>1.5.0</ktlint.version>
-        <wirespec.version>0.12.1</wirespec.version>
+        <kotest.version>6.1.11</kotest.version>
+        <kotlin.version>2.3.20</kotlin.version>
+        <ktlint.version>1.8.0</ktlint.version>
+        <testcontainers.version>1.21.4</testcontainers.version>
+        <wirespec.version>0.17.20</wirespec.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers</artifactId>
+                <version>${testcontainers.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>cassandra</artifactId>
+                <version>${testcontainers.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>${testcontainers.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>community.flock.wirespec.integration</groupId>
+                <artifactId>jackson-jvm</artifactId>
+                <version>${wirespec.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>community.flock.wirespec.integration</groupId>
+                <artifactId>wirespec-jvm</artifactId>
+                <version>${wirespec.version}</version>
+            </dependency>
             <dependency>
                 <groupId>community.flock.pragmatic</groupId>
                 <artifactId>domain</artifactId>
@@ -53,33 +79,33 @@
                 <artifactId>arrow-core-jvm</artifactId>
                 <version>${arrow.version}</version>
             </dependency>
+            <dependency>
+                <groupId>io.kotest</groupId>
+                <artifactId>kotest-assertions-arrow-jvm</artifactId>
+                <version>${kotest.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.kotest</groupId>
+                <artifactId>kotest-runner-junit5-jvm</artifactId>
+                <version>${kotest.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.kotest</groupId>
+                <artifactId>kotest-assertions-core-jvm</artifactId>
+                <version>${kotest.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.kotest</groupId>
+                <artifactId>kotest-property-jvm</artifactId>
+                <version>${kotest.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
         <dependency>
-            <groupId>io.kotest.extensions</groupId>
-            <artifactId>kotest-assertions-arrow-jvm</artifactId>
-            <version>${kotest-arrow.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.kotest</groupId>
-            <artifactId>kotest-runner-junit5-jvm</artifactId>
-            <version>${kotest.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.kotest</groupId>
-            <artifactId>kotest-assertions-core-jvm</artifactId>
-            <version>${kotest.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.kotest</groupId>
-            <artifactId>kotest-property-jvm</artifactId>
-            <version>${kotest.version}</version>
-            <scope>test</scope>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
         </dependency>
     </dependencies>
 
@@ -88,6 +114,31 @@
         <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <configuration>
+                        <failOnWarning>${dependency-analyze.strict}</failOnWarning>
+                        <ignoredDependencies>
+                            <ignoredDependency>org.jetbrains:annotations</ignoredDependency>
+                        </ignoredDependencies>
+                        <ignoredUnusedDeclaredDependencies>
+                            <ignoredUnusedDeclaredDependency>io.kotest:kotest-runner-junit5-jvm</ignoredUnusedDeclaredDependency>
+                            <ignoredUnusedDeclaredDependency>org.junit.jupiter:junit-jupiter-engine</ignoredUnusedDeclaredDependency>
+                            <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot-actuator-autoconfigure</ignoredUnusedDeclaredDependency>
+                            <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot-starter-data-jpa</ignoredUnusedDeclaredDependency>
+                            <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot-starter-web</ignoredUnusedDeclaredDependency>
+                            <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot-starter-webflux</ignoredUnusedDeclaredDependency>
+                        </ignoredUnusedDeclaredDependencies>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>analyze-only</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-antrun-plugin</artifactId>
@@ -146,8 +197,11 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>${maven-surefire-plugin.version}</version>
             </plugin>
             <plugin>
                 <groupId>com.github.ekryd.sortpom</groupId>

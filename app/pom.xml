@@ -10,10 +10,6 @@
 
     <artifactId>app</artifactId>
 
-    <properties>
-        <testcontainers.version>1.20.6</testcontainers.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -28,6 +24,14 @@
             <artifactId>jackson-module-kotlin</artifactId>
         </dependency>
         <dependency>
+            <groupId>community.flock.wirespec.integration</groupId>
+            <artifactId>jackson-jvm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>community.flock.wirespec.integration</groupId>
+            <artifactId>wirespec-jvm</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.projectreactor.kotlin</groupId>
             <artifactId>reactor-kotlin-extensions</artifactId>
         </dependency>
@@ -40,14 +44,9 @@
             <artifactId>kotlin-reflect</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-coroutines-reactor</artifactId>
         </dependency>
-
         <dependency>
             <groupId>community.flock.pragmatic</groupId>
             <artifactId>domain</artifactId>
@@ -60,28 +59,25 @@
             <groupId>community.flock.pragmatic</groupId>
             <artifactId>petstore</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-testcontainers</artifactId>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers</artifactId>
-            <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>cassandra</artifactId>
-            <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -92,6 +88,26 @@
         <dependency>
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.kotest</groupId>
+            <artifactId>kotest-assertions-arrow-jvm</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.kotest</groupId>
+            <artifactId>kotest-runner-junit5-jvm</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.kotest</groupId>
+            <artifactId>kotest-assertions-core-jvm</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.kotest</groupId>
+            <artifactId>kotest-property-jvm</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

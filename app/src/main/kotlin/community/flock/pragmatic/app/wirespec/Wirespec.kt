@@ -1,15 +1,18 @@
 package community.flock.pragmatic.app.wirespec
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import community.flock.wirespec.integration.jackson.kotlin.WirespecModuleKotlin
 import community.flock.wirespec.kotlin.Wirespec
+import community.flock.wirespec.kotlin.serde.DefaultParamSerialization
+import community.flock.wirespec.kotlin.serde.DefaultPathSerialization
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.serializer
 import org.springframework.http.HttpMethod
 import org.springframework.http.RequestEntity
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestOperations
+import org.springframework.web.client.exchange
 import kotlin.reflect.KType
-import kotlin.reflect.full.createType
+import kotlin.reflect.javaType
 
 @Component
 class WirespecClient(
@@ -21,14 +24,14 @@ class WirespecClient(
                 RequestEntity
                     .method(HttpMethod.valueOf(request.method), request.path.joinToString(""))
                     .headers { headers -> request.headers.forEach { (name, values) -> headers.addAll(name, values) } }
-                    .body<String>(request.body ?: "")
-            val response = client.exchange(request, String::class.java)
+                    .body(request.body?.toString(Charsets.UTF_8) ?: "")
+            val response = client.exchange<String>(request)
 
             response.run {
                 Wirespec.RawResponse(
                     statusCode = statusCode.value(),
-                    headers = headers.entries.associate { it.key to it.value },
-                    body = body,
+                    headers = headers.toSingleValueMap().entries.associate { it.key to listOf(it.value) },
+                    body = body?.toByteArray(Charsets.UTF_8),
                 )
             }
         }
@@ -41,33 +44,41 @@ class WirespecClient(
  * of Wirespec.ParamSerialization instead of using DefaultParamSerialization.
  * In this case, you don't need the dependency on community.flock.wirespec.integration:wirespec
  */
-@Suppress("UNCHECKED_CAST")
-object Serialization : Wirespec.Serialization<String>, Wirespec.ParamSerialization {
-    override fun <T> serialize(
+@Component
+class Serialization(
+    objectMapper: ObjectMapper,
+) : Wirespec.Serialization,
+    Wirespec.ParamSerialization by DefaultParamSerialization(),
+    Wirespec.PathSerialization by DefaultPathSerialization() {
+    private val wirespecObjectMapper =
+        objectMapper
+            .copy()
+            .registerModule(WirespecModuleKotlin())
+
+    override fun <T : Any> serializeBody(
         t: T,
         kType: KType,
-    ): String = Json.encodeToString(Json.serializersModule.serializer(kType), t)
-
-    override fun <T> deserialize(
-        raw: String,
-        kType: KType,
-    ): T =
-        when (kType) {
-            String::class.createType() -> raw as T
-            else -> Json.decodeFromString(Json.serializersModule.serializer(kType), raw) as T
+    ): ByteArray =
+        when (t) {
+            is String -> t.toByteArray()
+            else -> wirespecObjectMapper.writeValueAsBytes(t)
         }
 
-    override fun <T> serializeParam(
-        value: T,
+    @Suppress("UNCHECKED_CAST")
+    @OptIn(ExperimentalStdlibApi::class)
+    override fun <T : Any> deserializeBody(
+        raw: ByteArray,
         kType: KType,
-    ): List<String> {
-        TODO("Not yet implemented")
-    }
+    ): T =
+        when {
+            kType.classifier == String::class -> {
+                raw as T
+            }
 
-    override fun <T> deserializeParam(
-        values: List<String>,
-        kType: KType,
-    ): T {
-        TODO("Not yet implemented")
-    }
+            else -> {
+                wirespecObjectMapper
+                    .constructType(kType.javaType)
+                    .let { wirespecObjectMapper.readValue(raw, it) }
+            }
+        }
 }

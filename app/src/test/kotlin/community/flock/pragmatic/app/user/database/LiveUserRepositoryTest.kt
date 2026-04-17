@@ -2,13 +2,13 @@ package community.flock.pragmatic.app.user.database
 
 import arrow.core.getOrElse
 import com.datastax.oss.driver.api.core.CqlSession
-import community.flock.pragmatic.api.wirespec.PotentialUserDto
+import community.flock.pragmatic.api.wirespec.model.PotentialUserDto
 import community.flock.pragmatic.app.environment.CASSANDRA_DOCKER_VERSION
 import community.flock.pragmatic.app.user.web.UserConsumer.validate
 import io.kotest.assertions.arrow.core.shouldBeRight
-import io.kotest.engine.runBlocking
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test

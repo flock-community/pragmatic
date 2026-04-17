@@ -1,5 +1,3 @@
-version: "3"
-
 services:
   cassandra:
     image: cassandra:4.0.5 # Also update app/src/test/community/flock/pragmatic/app/environment/Variables.kt

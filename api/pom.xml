@@ -12,73 +12,10 @@
 
     <properties>
         <api.version>0.0.1</api.version>
-        <javax.version>2.1.1</javax.version>
-        <jaxb-api.version>2.3.1</jaxb-api.version>
-        <swagger-maven-plugin.version>3.1.8</swagger-maven-plugin.version>
-        <swagger.version>1.6.14</swagger.version>
     </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>javax.ws.rs-api</artifactId>
-            <version>${javax.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>${jaxb-api.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-annotations</artifactId>
-            <version>${swagger.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-models</artifactId>
-            <version>${swagger.version}</version>
-        </dependency>
-    </dependencies>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>com.github.kongchen</groupId>
-                <artifactId>swagger-maven-plugin</artifactId>
-                <version>${swagger-maven-plugin.version}</version>
-                <configuration>
-                    <apiSources>
-                        <apiSource>
-                            <springmvc>false</springmvc>
-                            <locations>
-                                <location>community.flock.pragmatic.api</location>
-                            </locations>
-                            <info>
-                                <title>Pragmatic Functional Programming in Kotlin API</title>
-                                <version>${api.version}</version>
-                            </info>
-                            <swaggerDirectory>${project.build.directory}/swagger</swaggerDirectory>
-                            <swaggerFileName>Pragmatic-API-${api.version}</swaggerFileName>
-                            <outputFormats>json</outputFormats>
-                            <attachSwaggerArtifact>true</attachSwaggerArtifact>
-                        </apiSource>
-                    </apiSources>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <phase>compile</phase>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>community.flock.wirespec.plugin.maven</groupId>
                 <artifactId>wirespec-maven-plugin</artifactId>

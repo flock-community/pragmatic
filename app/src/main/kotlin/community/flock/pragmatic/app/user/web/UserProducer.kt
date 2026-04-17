@@ -1,7 +1,7 @@
 package community.flock.pragmatic.app.user.web
 
-import community.flock.pragmatic.api.wirespec.UserDto
-import community.flock.pragmatic.api.wirespec.UserIdentifier
+import community.flock.pragmatic.api.wirespec.model.UserDto
+import community.flock.pragmatic.api.wirespec.model.UserIdentifier
 import community.flock.pragmatic.app.common.Producer
 import community.flock.pragmatic.domain.user.model.User
 import community.flock.pragmatic.domain.user.model.User.Id
