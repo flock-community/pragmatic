@@ -6,7 +6,7 @@ services:
     ports:
       - "9142:9042"
     volumes:
-      - "./.database:/custom-init"
+      - "./app/src/test/resources/database:/custom-init"
     working_dir: "/custom-init"
     command: "sh db-init.sh"
     healthcheck:

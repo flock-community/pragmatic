@@ -5,7 +5,8 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.10</version>
+        <!-- also change the `spring-boot.version` in the property declaration -->
+        <version>4.0.6</version>
     </parent>
 
     <groupId>community.flock.pragmatic</groupId>
@@ -24,40 +25,34 @@
     <properties>
         <arrow.version>2.2.2.1</arrow.version>
         <dependency-analyze.strict>false</dependency-analyze.strict>
+        <jackson-2.version>2.18.2</jackson-2.version>
         <java.version>21</java.version>
         <kotest.version>6.1.11</kotest.version>
         <kotlin.version>2.3.21</kotlin.version>
-        <ktlint.version>1.8.0</ktlint.version>
-        <testcontainers.version>1.21.4</testcontainers.version>
+        <revision>0.0.1-SNAPSHOT</revision>
+        <sortpom-maven-plugin.version>3.2.0</sortpom-maven-plugin.version>
+        <spotless-maven-plugin.version>3.5.1</spotless-maven-plugin.version>
+        <spotless.check.skip>false</spotless.check.skip>
+        <!-- also change the spring-boot version to inherit from the parent pom -->
+        <spring-boot.version>4.0.6</spring-boot.version>
         <wirespec.version>0.17.20</wirespec.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>testcontainers</artifactId>
-                <version>${testcontainers.version}</version>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson-2-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>cassandra</artifactId>
-                <version>${testcontainers.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>junit-jupiter</artifactId>
-                <version>${testcontainers.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>community.flock.wirespec.integration</groupId>
-                <artifactId>jackson-jvm</artifactId>
+                <groupId>community.flock.wirespec</groupId>
+                <artifactId>bom</artifactId>
                 <version>${wirespec.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>community.flock.wirespec.integration</groupId>
-                <artifactId>wirespec-jvm</artifactId>
-                <version>${wirespec.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>community.flock.pragmatic</groupId>
@@ -115,6 +110,52 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <groupId>com.diffplug.spotless</groupId>
+                    <artifactId>spotless-maven-plugin</artifactId>
+                    <version>${spotless-maven-plugin.version}</version>
+                    <configuration>
+                        <skip>${spotless.check.skip}</skip>
+                        <kotlin>
+                            <includes>
+                                <include>src/main/kotlin/**/*.kt</include>
+                                <include>src/test/kotlin/**/*.kt</include>
+                            </includes>
+                            <ktlint/>
+                        </kotlin>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>spotless-check</id>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.ekryd.sortpom</groupId>
+                    <artifactId>sortpom-maven-plugin</artifactId>
+                    <version>${sortpom-maven-plugin.version}</version>
+                    <configuration>
+                        <predefinedSortOrder>custom_1</predefinedSortOrder>
+                        <lineSeparator>\n</lineSeparator>
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                        <sortProperties>true</sortProperties>
+                        <sortDependencies>scope</sortDependencies>
+                        <nrOfIndentSpace>4</nrOfIndentSpace>
+                        <expandEmptyElements>false</expandEmptyElements>
+                        <createBackupFile>false</createBackupFile>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>sort</goal>
+                            </goals>
+                            <phase>validate</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
                     <configuration>
@@ -127,7 +168,6 @@
                             <ignoredUnusedDeclaredDependency>org.junit.jupiter:junit-jupiter-engine</ignoredUnusedDeclaredDependency>
                             <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot-actuator-autoconfigure</ignoredUnusedDeclaredDependency>
                             <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot-starter-data-jpa</ignoredUnusedDeclaredDependency>
-                            <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot-starter-web</ignoredUnusedDeclaredDependency>
                             <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot-starter-webflux</ignoredUnusedDeclaredDependency>
                         </ignoredUnusedDeclaredDependencies>
                     </configuration>
@@ -140,45 +180,49 @@
                     </executions>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-antrun-plugin</artifactId>
-                    <version>${maven-antrun-plugin.version}</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>com.pinterest.ktlint</groupId>
-                            <artifactId>ktlint-cli</artifactId>
-                            <version>${ktlint.version}</version>
-                        </dependency>
-                        <!-- additional 3rd party ruleset(s) can be specified here -->
-                    </dependencies>
+                    <groupId>org.jetbrains.kotlin</groupId>
+                    <artifactId>kotlin-maven-plugin</artifactId>
+                    <configuration>
+                        <jvmTarget>${java.version}</jvmTarget>
+                        <args>
+                            <arg>-java-parameters</arg>
+                            <arg>-Xjsr305=strict</arg>
+                            <arg>-Xreturn-value-checker=full</arg>
+                            <arg>-Xcontext-parameters</arg>
+                        </args>
+                    </configuration>
                     <executions>
                         <execution>
-                            <id>ktlint-format</id>
+                            <id>compile</id>
                             <goals>
-                                <goal>run</goal>
+                                <goal>compile</goal>
                             </goals>
-                            <configuration>
-                                <target name="ktlint">
-                                    <java classname="com.pinterest.ktlint.Main" classpathref="maven.plugin.classpath" dir="${basedir}" failonerror="true" fork="true" taskname="ktlint">
-                                        <jvmarg value="--add-opens=java.base/java.lang=ALL-UNNAMED"/>
-                                        <arg value="-F"/>
-                                        <arg value="src/**/*.kt"/>
-                                    </java>
-                                </target>
-                            </configuration>
+                            <phase>compile</phase>
                         </execution>
                         <execution>
-                            <id>ktlint</id>
+                            <id>test-compile</id>
                             <goals>
-                                <goal>run</goal>
+                                <goal>test-compile</goal>
                             </goals>
-                            <phase>verify</phase>
+                            <phase>test-compile</phase>
+                        </execution>
+                        <execution>
+                            <id>kapt</id>
+                            <goals>
+                                <goal>kapt</goal>
+                            </goals>
+                            <phase>process-resources</phase>
                             <configuration>
-                                <target name="ktlint">
-                                    <java classname="com.pinterest.ktlint.Main" classpathref="maven.plugin.classpath" dir="${basedir}" failonerror="true" fork="true" taskname="ktlint">
-                                        <arg value="src/**/*.kt"/>
-                                    </java>
-                                </target>
+                                <sourceDirs>
+                                    <sourceDir>src/main/kotlin</sourceDir>
+                                </sourceDirs>
+                                <annotationProcessorPaths>
+                                    <annotationProcessorPath>
+                                        <groupId>org.springframework.boot</groupId>
+                                        <artifactId>spring-boot-configuration-processor</artifactId>
+                                        <version>${spring-boot.version}</version>
+                                    </annotationProcessorPath>
+                                </annotationProcessorPaths>
                             </configuration>
                         </execution>
                     </executions>
@@ -187,13 +231,8 @@
         </pluginManagement>
         <plugins>
             <plugin>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-maven-plugin</artifactId>
-                <configuration>
-                    <args>
-                        <arg>-Xjsr305=strict</arg>
-                    </args>
-                </configuration>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -204,27 +243,12 @@
                 <artifactId>maven-surefire-plugin</artifactId>
             </plugin>
             <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
                 <groupId>com.github.ekryd.sortpom</groupId>
                 <artifactId>sortpom-maven-plugin</artifactId>
-                <version>3.2.0</version>
-                <configuration>
-                    <predefinedSortOrder>custom_1</predefinedSortOrder>
-                    <lineSeparator>\n</lineSeparator>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                    <sortProperties>true</sortProperties>
-                    <sortDependencies>scope</sortDependencies>
-                    <nrOfIndentSpace>4</nrOfIndentSpace>
-                    <expandEmptyElements>false</expandEmptyElements>
-                    <createBackupFile>false</createBackupFile>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>sort</goal>
-                        </goals>
-                        <phase>verify</phase>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
@@ -233,17 +257,39 @@
         <profile>
             <id>format</id>
             <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.diffplug.spotless</groupId>
+                        <artifactId>spotless-maven-plugin</artifactId>
+                        <configuration>
+                            <skip>false</skip>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>spotless-apply</id>
+                                <goals>
+                                    <goal>apply</goal>
+                                </goals>
+                                <phase>validate</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>return-value-not-used-strict</id>
+            <build>
                 <pluginManagement>
                     <plugins>
                         <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-antrun-plugin</artifactId>
-                            <executions>
-                                <execution>
-                                    <id>ktlint-format</id>
-                                    <phase>validate</phase>
-                                </execution>
-                            </executions>
+                            <groupId>org.jetbrains.kotlin</groupId>
+                            <artifactId>kotlin-maven-plugin</artifactId>
+                            <configuration>
+                                <args>
+                                    <arg>-Xwarning-level=RETURN_VALUE_NOT_USED:error</arg>
+                                </args>
+                            </configuration>
                         </plugin>
                     </plugins>
                 </pluginManagement>

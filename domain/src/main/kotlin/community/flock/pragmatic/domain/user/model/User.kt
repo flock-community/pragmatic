@@ -1,12 +1,13 @@
 package community.flock.pragmatic.domain.user.model
 
-import arrow.core.Either
+import arrow.core.Either.Companion.catch
 import arrow.core.raise.either
 import arrow.core.raise.ensure
 import community.flock.pragmatic.domain.data.Value
 import community.flock.pragmatic.domain.error.BirthDayError
 import community.flock.pragmatic.domain.error.FirstNameError
 import community.flock.pragmatic.domain.error.LastNameError
+import community.flock.pragmatic.domain.error.ValidationError.UUIDError
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
 import java.util.UUID
@@ -25,6 +26,13 @@ data class User<T : User.Id>(
             Id
 
         data object NonExisting : Id
+
+        companion object {
+            operator fun invoke(s: String) =
+                catch { UUID.fromString(s) }
+                    .mapLeft { UUIDError }
+                    .map(::Valid)
+        }
     }
 }
 
@@ -66,8 +74,7 @@ value class BirthDay private constructor(
 
     companion object {
         operator fun invoke(s: String) =
-            Either
-                .catch { LocalDate.parse(s, ISO_LOCAL_DATE) }
+            catch { LocalDate.parse(s, ISO_LOCAL_DATE) }
                 .mapLeft { BirthDayError.Invalid }
                 .map(::BirthDay)
     }
