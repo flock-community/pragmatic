@@ -55,9 +55,21 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <groupId>io.kotest</groupId>
+                <artifactId>kotest-bom</artifactId>
+                <version>${kotest.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
                 <groupId>community.flock.pragmatic</groupId>
                 <artifactId>domain</artifactId>
                 <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.arrow-kt</groupId>
+                <artifactId>arrow-exception-utils-jvm</artifactId>
+                <version>${arrow.version}</version>
             </dependency>
             <dependency>
                 <groupId>community.flock.pragmatic</groupId>
@@ -73,26 +85,6 @@
                 <groupId>io.arrow-kt</groupId>
                 <artifactId>arrow-core-jvm</artifactId>
                 <version>${arrow.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.kotest</groupId>
-                <artifactId>kotest-assertions-arrow-jvm</artifactId>
-                <version>${kotest.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.kotest</groupId>
-                <artifactId>kotest-runner-junit5-jvm</artifactId>
-                <version>${kotest.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.kotest</groupId>
-                <artifactId>kotest-assertions-core-jvm</artifactId>
-                <version>${kotest.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.kotest</groupId>
-                <artifactId>kotest-property-jvm</artifactId>
-                <version>${kotest.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -163,10 +155,14 @@
                         <ignoredDependencies>
                             <ignoredDependency>org.jetbrains:annotations</ignoredDependency>
                         </ignoredDependencies>
+                        <ignoredNonTestScopedDependencies>
+                            <ignoredNonTestScopedDependency>org.springframework:spring-beans</ignoredNonTestScopedDependency>
+                        </ignoredNonTestScopedDependencies>
                         <ignoredUnusedDeclaredDependencies>
                             <ignoredUnusedDeclaredDependency>io.kotest:kotest-runner-junit5-jvm</ignoredUnusedDeclaredDependency>
                             <ignoredUnusedDeclaredDependency>org.junit.jupiter:junit-jupiter-engine</ignoredUnusedDeclaredDependency>
                             <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot-actuator-autoconfigure</ignoredUnusedDeclaredDependency>
+                            <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot-starter-data-cassandra-reactive</ignoredUnusedDeclaredDependency>
                             <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot-starter-data-jpa</ignoredUnusedDeclaredDependency>
                             <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot-starter-webflux</ignoredUnusedDeclaredDependency>
                         </ignoredUnusedDeclaredDependencies>

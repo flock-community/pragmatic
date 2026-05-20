@@ -9,26 +9,32 @@ RELEASE_VERSION?=local-SNAPSHOT
 .PHONY: *
 
 # The first command will be invoked with `make` only and should be `build`
-build: ## Standard build, unit-test, format, and analyze-dependencies
-	$(MVN) verify -Pformat -Ddependency-analyze.strict=false -Preturn-value-not-used-strict
+build: docker ## Standard build, test, format, and analyze-dependencies
+	$(MVN) verify -Pformat -Ddependency-analyze.strict -Preturn-value-not-used-strict
 
-## Equivalent to `make clean build test`
-all: clean build test
+## Equivalent to `make clean build`
+all: clean build
 
-ci: ## Install a local artifact
-	$(MVN) install
+ci: ## Install the artifact without testing it
+	$(MVN) install -DskipTests
 
 clean: ## Clean the project
 	$(MVN) clean
+
+docker: ## Test if docker is running
+	docker info
 
 format: ## Format the code and pom files
 	$(MVN) test-compile -DskipTests -Dquality.skip -Pformat
 
 ## Install a local artifact with a version defined in this Makefile with RELEASE_VERSION
-local: clean version ci version-revert
+local: clean format version ci version-revert
+
+run: docker ## Run the app jar from the target folder /app/target
+	java -jar app/target/app-*.jar
 
 test: ## Run tests
-	$(MVN) verify
+	$(MVN) test
 
 update: ## Update versions in the pom files
 	$(MVN) versions:update-parent versions:update-properties versions:use-latest-versions

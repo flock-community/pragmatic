@@ -10,10 +10,6 @@
 
     <artifactId>api</artifactId>
 
-    <properties>
-        <api.version>0.0.1</api.version>
-    </properties>
-
     <build>
         <plugins>
             <plugin>
@@ -36,10 +32,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
