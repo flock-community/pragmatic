@@ -26,7 +26,7 @@
         <dependency-analyze.strict>false</dependency-analyze.strict>
         <java.version>21</java.version>
         <kotest.version>6.1.11</kotest.version>
-        <kotlin.version>2.3.20</kotlin.version>
+        <kotlin.version>2.3.21</kotlin.version>
         <ktlint.version>1.8.0</ktlint.version>
         <testcontainers.version>1.21.4</testcontainers.version>
         <wirespec.version>0.17.20</wirespec.version>

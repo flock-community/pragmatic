@@ -1,6 +1,6 @@
 services:
   cassandra:
-    image: cassandra:4.0.5 # Also update app/src/test/community/flock/pragmatic/app/environment/Variables.kt
+    image: cassandra:4.1.11 # Also update app/src/test/kotlin/community/flock/pragmatic/app/environment/Variables.kt
     hostname: cassandra
     container_name: cassandra
     ports:
