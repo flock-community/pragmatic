@@ -19,10 +19,6 @@
             <groupId>io.arrow-kt</groupId>
             <artifactId>arrow-exception-utils-jvm</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.jetbrains.kotlinx</groupId>
-            <artifactId>kotlinx-coroutines-core-jvm</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>io.kotest</groupId>

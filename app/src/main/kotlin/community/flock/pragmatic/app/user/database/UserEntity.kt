@@ -1,18 +1,16 @@
 package community.flock.pragmatic.app.user.database
 
-import org.springframework.data.cassandra.core.mapping.Column
-import org.springframework.data.cassandra.core.mapping.PrimaryKey
-import org.springframework.data.cassandra.core.mapping.Table
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.Table
 import java.util.UUID
 
-@Table("users")
+@Entity
+@Table(name = "users")
 data class UserEntity(
-    @PrimaryKey("user_id")
+    @Id
     val userId: UUID,
-    @field:Column("first_name")
     val firstName: String,
-    @field:Column("last_name")
     val lastName: String,
-    @field:Column("birth_day")
     val birthDay: String,
 )

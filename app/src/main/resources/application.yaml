@@ -1,13 +1,7 @@
 spring:
-  cassandra:
-    config: classpath:application.conf
-    contact-points: 127.0.0.1
-    keyspace-name: pragmatic
-    local-datacenter: datacenter1
-    username: cassandra
-    password: cassandra
-    port: 9142
-    ssl.enabled: false
-    request:
-      consistency: one
-      serial-consistency: one
+  datasource:
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect

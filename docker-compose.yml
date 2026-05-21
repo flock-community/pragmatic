@@ -1,21 +1,13 @@
 services:
-  cassandra:
-    image: cassandra:4.1.11 # Also update app/src/test/kotlin/community/flock/pragmatic/app/environment/Variables.kt
-    hostname: cassandra
-    container_name: cassandra
+  postgres:
+    image: postgres:18-alpine # Also update app/src/test/kotlin/community/flock/pragmatic/app/environment/WithPostgresContainer.kt
+    hostname: postgres
+    container_name: postgres
     ports:
-      - "9142:9042"
+      - "5432:5432"
     volumes:
-      - "./app/src/test/resources/database:/custom-init"
-    working_dir: "/custom-init"
-    command: "sh db-init.sh"
-    healthcheck:
-      test: [ "CMD", "/opt/cassandra/bin/cqlsh", "-u cassandra", "-p cassandra" ,"-e \"describe keyspaces\"" ]
-      interval: 15s
-      timeout: 10s
-      retries: 10
+      - "./app/src/test/resources/postgres:/docker-entrypoint-initdb.d"
     environment:
-      - CASSANDRA_SEEDS=cassandra
-      - CASSANDRA_PASSWORD_SEEDER=yes
-      - CASSANDRA_PASSWORD=cassandra
-      - CASSANDRA_CLUSTER_NAME=local
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres

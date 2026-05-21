@@ -3,8 +3,6 @@ package community.flock.pragmatic.domain.user
 import community.flock.pragmatic.domain.user.model.UserMother
 import io.kotest.assertions.arrow.core.shouldBeRight
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 
 private interface TestContext {
@@ -38,12 +36,10 @@ class UserServiceTest {
         }
 }
 
-private fun inContext(test: suspend TestContext.() -> Unit) =
-    runBlocking {
-        object : TestContext {
-            override val userService =
-                object : UserService {
-                    override val userRepository = TestUserRepository()
-                }
-        }.test()
-    }
+private fun inContext(test: TestContext.() -> Unit) =
+    object : TestContext {
+        override val userService =
+            object : UserService {
+                override val userRepository = TestUserRepository()
+            }
+    }.test()
