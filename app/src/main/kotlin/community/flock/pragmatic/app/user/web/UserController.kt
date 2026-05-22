@@ -44,14 +44,14 @@ class UserController(
         }
 
     @GetMapping
-    fun getUsers() =
+    suspend fun getUsers() =
         either {
             val users = userService.getUsers().bind()
             users.toList().produce()
         }.handle()
 
     @GetMapping("/{id}")
-    fun getUserById(
+    suspend fun getUserById(
         @PathVariable id: String,
     ) = either {
         val uuid = id.validate().bind()
@@ -60,7 +60,7 @@ class UserController(
     }.handle()
 
     @PostMapping
-    fun postUser(
+    suspend fun postUser(
         @RequestBody potentialUser: PotentialUserDto,
     ) = either {
         val user = potentialUser.validate().bind()
@@ -69,7 +69,7 @@ class UserController(
     }.handle()
 
     @DeleteMapping("/{id}")
-    fun deleteUserById(
+    suspend fun deleteUserById(
         @PathVariable id: String,
     ) = either {
         val uuid = id.validate().bind()

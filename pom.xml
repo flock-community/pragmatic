@@ -168,9 +168,10 @@
                         </ignoredNonTestScopedDependencies>
                         <ignoredUnusedDeclaredDependencies>
                             <ignoredUnusedDeclaredDependency>io.kotest:kotest-runner-junit5-jvm</ignoredUnusedDeclaredDependency>
+                            <ignoredUnusedDeclaredDependency>org.jetbrains.kotlinx:kotlinx-coroutines-reactor</ignoredUnusedDeclaredDependency>
                             <ignoredUnusedDeclaredDependency>org.junit.jupiter:junit-jupiter-engine</ignoredUnusedDeclaredDependency>
                             <ignoredUnusedDeclaredDependency>org.postgresql:postgresql</ignoredUnusedDeclaredDependency>
-                            <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot-starter-webmvc</ignoredUnusedDeclaredDependency>
+                            <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot-starter-webflux</ignoredUnusedDeclaredDependency>
                         </ignoredUnusedDeclaredDependencies>
                     </configuration>
                     <executions>

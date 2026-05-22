@@ -22,5 +22,5 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:8080/api/users/34de7520-209f-4b4f-8799-112e9a8bfa9f
+DELETE http://localhost:8080/api/users/cf8c1fe6-fb9e-436f-883f-cf5ffba90629
 Accept: application/json
