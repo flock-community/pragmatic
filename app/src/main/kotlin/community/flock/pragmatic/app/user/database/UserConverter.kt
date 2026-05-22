@@ -1,39 +1,33 @@
 package community.flock.pragmatic.app.user.database
 
-import arrow.core.Either
-import arrow.core.NonEmptyList
+import arrow.core.EitherNel
 import arrow.core.raise.either
 import arrow.core.raise.zipOrAccumulate
-import community.flock.pragmatic.app.common.Externalizer
-import community.flock.pragmatic.app.common.Internalizer
-import community.flock.pragmatic.domain.error.ValidationError
-import community.flock.pragmatic.domain.error.ValidationErrors
+import community.flock.pragmatic.app.common.downstream.Externalizer
+import community.flock.pragmatic.app.common.downstream.Verifier
+import community.flock.pragmatic.domain.error.SingleValidationError
 import community.flock.pragmatic.domain.user.model.BirthDay
 import community.flock.pragmatic.domain.user.model.FirstName
 import community.flock.pragmatic.domain.user.model.LastName
 import community.flock.pragmatic.domain.user.model.User
 import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
-import java.util.UUID
 
-object UserInternalizer : Internalizer<UserEntity, Either<ValidationErrors, User<User.Id.Valid>>> {
-    override fun UserEntity.internalize() =
-        either<NonEmptyList<ValidationError>, User<User.Id.Valid>> {
+object UserConverter : Verifier<UserEntity, User<User.Id.Valid>>, Externalizer<User<User.Id.NonExisting>, UserEntity> {
+    override fun UserEntity.internalize(): EitherNel<SingleValidationError, User<User.Id.Valid>> =
+        either {
             zipOrAccumulate(
-                { User.Id.Valid(userId) },
+                { User.Id.Valid(id.value) },
                 { FirstName(firstName).bind() },
                 { LastName(lastName).bind() },
                 { BirthDay(birthDay).bind() },
                 ::User,
             )
-        }.mapLeft(::ValidationErrors)
-}
+        }
 
-object UserExternalizer : Externalizer<User<User.Id.NonExisting>, UserEntity> {
-    override fun User<User.Id.NonExisting>.externalize() =
-        UserEntity(
-            userId = UUID.randomUUID(),
-            firstName = firstName.value,
-            lastName = lastName.value,
-            birthDay = birthDay.value.format(ISO_LOCAL_DATE),
-        )
+    override fun User<User.Id.NonExisting>.externalize(): UserEntity =
+        UserEntity.new {
+            firstName = this@externalize.firstName.value
+            lastName = this@externalize.lastName.value
+            birthDay = this@externalize.birthDay.value.format(ISO_LOCAL_DATE)
+        }
 }

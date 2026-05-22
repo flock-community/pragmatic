@@ -2,7 +2,8 @@ package community.flock.pragmatic.app.user.web
 
 import community.flock.pragmatic.api.wirespec.model.UserDto
 import community.flock.pragmatic.api.wirespec.model.UserIdentifier
-import community.flock.pragmatic.app.common.Producer
+import community.flock.pragmatic.app.common.upstream.Producer
+import community.flock.pragmatic.app.user.web.UUIDTransformer.produce
 import community.flock.pragmatic.domain.user.model.User
 import community.flock.pragmatic.domain.user.model.User.Id
 import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
@@ -17,7 +18,7 @@ object UsersProducer : Producer<List<User<Id.Valid>>, List<UserDto>> {
 object UserProducer : Producer<User<Id.Valid>, UserDto> {
     override fun User<Id.Valid>.produce() =
         UserDto(
-            id = UserIdentifier(id.value.toString()),
+            id = UserIdentifier(id.value.produce()),
             firstName = firstName.value,
             lastName = lastName.value,
             birthDate = birthDay.value.format(ISO_LOCAL_DATE),

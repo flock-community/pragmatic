@@ -1,4 +1,4 @@
-package community.flock.pragmatic.app.exceptions
+package community.flock.pragmatic.app.common.exceptions
 
 import community.flock.pragmatic.domain.error.DomainError
 import community.flock.pragmatic.domain.error.ValidationError
@@ -31,5 +31,5 @@ class DomainException(
 ) : BusinessException(error.message)
 
 class ValidationException(
-    errors: List<ValidationError>,
+    errors: Set<ValidationError>,
 ) : BusinessException(errors.joinToString { it.message })

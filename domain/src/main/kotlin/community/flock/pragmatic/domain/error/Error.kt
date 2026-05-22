@@ -23,12 +23,14 @@ sealed class DomainError(
 
 sealed class ValidationError(
     override val message: String,
-) : Error {
-    data object UUIDError : ValidationError("Not a valid UUID")
-}
+) : Error
 
-class ValidationErrors(
-    val errors: List<ValidationError>,
-) : Error {
-    override val message = "Multiple Validation Errors: ${errors.joinToString { it.message }}"
-}
+sealed class SingleValidationError(
+    message: String,
+) : ValidationError(message)
+
+data object UUIDError : SingleValidationError("Not a valid UUID")
+
+class MultipleValidationErrors(
+    val errors: Set<SingleValidationError>,
+) : ValidationError("Validation failed: ${errors.joinToString { it.message }}")

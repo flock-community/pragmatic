@@ -7,7 +7,7 @@ import community.flock.pragmatic.domain.data.Value
 import community.flock.pragmatic.domain.error.BirthDayError
 import community.flock.pragmatic.domain.error.FirstNameError
 import community.flock.pragmatic.domain.error.LastNameError
-import community.flock.pragmatic.domain.error.ValidationError.UUIDError
+import community.flock.pragmatic.domain.error.UUIDError
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
 import java.util.UUID

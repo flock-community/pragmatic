@@ -1,4 +1,4 @@
-package community.flock.pragmatic.app.common
+package community.flock.pragmatic.app.common.downstream
 
 import arrow.core.Either
 import community.flock.pragmatic.domain.error.TechnicalError

@@ -1,4 +1,4 @@
-package community.flock.pragmatic.app.common
+package community.flock.pragmatic.app
 
 import community.flock.pragmatic.app.user.web.UserControllerDependencies
 import community.flock.pragmatic.domain.user.UserRepository

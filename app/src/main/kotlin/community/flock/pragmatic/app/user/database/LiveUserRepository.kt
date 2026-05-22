@@ -3,53 +3,66 @@ package community.flock.pragmatic.app.user.database
 import arrow.core.Either
 import arrow.core.raise.either
 import arrow.core.raise.ensureNotNull
-import community.flock.pragmatic.app.user.database.UserExternalizer.externalize
-import community.flock.pragmatic.app.user.database.UserInternalizer.internalize
+import community.flock.pragmatic.app.user.database.UserConverter.externalize
+import community.flock.pragmatic.app.user.database.UserConverter.verify
+import community.flock.pragmatic.domain.error.DomainError
 import community.flock.pragmatic.domain.error.Error
 import community.flock.pragmatic.domain.error.UserNotFound
 import community.flock.pragmatic.domain.user.UserRepository
 import community.flock.pragmatic.domain.user.model.User
-import org.springframework.data.jpa.repository.JpaRepository
+import org.jetbrains.exposed.v1.jdbc.Database
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import org.springframework.core.env.Environment
 import org.springframework.stereotype.Component
-import java.util.UUID
-import kotlin.jvm.optionals.getOrNull
+
+@Component
+class ExposedDatabase(
+    env: Environment,
+) {
+    val postgres =
+        Database
+            .connect(
+                url = env.getRequiredProperty("spring.datasource.url"),
+                driver = "org.postgresql.Driver",
+                user = "postgres",
+                password = "postgres",
+            )
+}
+
+fun <E : Error, T : Any> Database.handle(block: () -> Either<E, T>) =
+    either {
+        transaction(this@handle) { block() }.bind()
+    }
+
+fun <D : DomainError, E : Error, T : Any> Database.handle(
+    domainError: D,
+    block: () -> Either<E, T>?,
+) = either {
+    val maybe = transaction(this@handle) { block() }?.bind()
+    ensureNotNull(maybe) { domainError }
+}
 
 @Component
 class LiveUserRepository(
-    private val repository: PostgresRepository,
+    private val db: ExposedDatabase,
 ) : UserRepository {
     override fun getAll(): Either<Error, List<User<User.Id.Valid>>> =
-        either {
-            repository
-                .findAll()
-                .map { it.internalize().bind() }
+        db.postgres.handle {
+            UserEntity.all().verify()
         }
 
     override fun getById(userId: User.Id.Valid): Either<Error, User<User.Id.Valid>> =
-        either {
-            val maybeUser =
-                repository
-                    .findById(userId.value)
-                    .getOrNull()
-            val user = ensureNotNull(maybeUser) { UserNotFound(userId) }
-            user.internalize().bind()
+        db.postgres.handle(UserNotFound(userId)) {
+            UserEntity.findById(userId.value)?.verify()
         }
 
     override fun save(user: User<User.Id.NonExisting>): Either<Error, User<User.Id.Valid>> =
-        either {
-            user
-                .externalize()
-                .let(repository::save)
-                .internalize()
-                .bind()
+        db.postgres.handle {
+            user.externalize().verify()
         }
 
     override fun deleteById(userId: User.Id.Valid): Either<Error, User<User.Id.Valid>> =
-        either {
-            val user = getById(userId).bind()
-            repository.deleteById(user.id.value)
-            user
+        db.postgres.handle(UserNotFound(userId)) {
+            UserEntity.findById(userId.value)?.also { it.delete() }?.verify()
         }
 }
-
-interface PostgresRepository : JpaRepository<UserEntity, UUID>

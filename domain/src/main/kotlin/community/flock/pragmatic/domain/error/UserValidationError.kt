@@ -2,7 +2,7 @@ package community.flock.pragmatic.domain.error
 
 sealed class UserValidationError(
     message: String,
-) : ValidationError(message)
+) : SingleValidationError(message)
 
 sealed class FirstNameError(
     message: String,

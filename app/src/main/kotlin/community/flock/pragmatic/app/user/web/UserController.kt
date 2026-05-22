@@ -4,11 +4,10 @@ import arrow.core.Either
 import arrow.core.getOrElse
 import arrow.core.raise.either
 import community.flock.pragmatic.api.wirespec.model.PotentialUserDto
-import community.flock.pragmatic.app.common.mappers.UUIDConsumer.validate
-import community.flock.pragmatic.app.exceptions.AppException
-import community.flock.pragmatic.app.exceptions.DomainException
-import community.flock.pragmatic.app.exceptions.TechnicalException
-import community.flock.pragmatic.app.exceptions.ValidationException
+import community.flock.pragmatic.app.common.exceptions.DomainException
+import community.flock.pragmatic.app.common.exceptions.TechnicalException
+import community.flock.pragmatic.app.common.exceptions.ValidationException
+import community.flock.pragmatic.app.user.web.UUIDTransformer.validate
 import community.flock.pragmatic.app.user.web.UserConsumer.validate
 import community.flock.pragmatic.app.user.web.UserProducer.produce
 import community.flock.pragmatic.app.user.web.UsersProducer.produce
@@ -16,7 +15,7 @@ import community.flock.pragmatic.domain.error.DomainError
 import community.flock.pragmatic.domain.error.Error
 import community.flock.pragmatic.domain.error.TechnicalError
 import community.flock.pragmatic.domain.error.ValidationError
-import community.flock.pragmatic.domain.error.ValidationErrors
+import community.flock.pragmatic.domain.error.errors
 import community.flock.pragmatic.domain.user.HasUserRepository
 import community.flock.pragmatic.domain.user.UserService
 import community.flock.pragmatic.domain.user.deleteUserById
@@ -24,7 +23,6 @@ import community.flock.pragmatic.domain.user.getUserById
 import community.flock.pragmatic.domain.user.getUsers
 import community.flock.pragmatic.domain.user.model.User
 import community.flock.pragmatic.domain.user.saveUser
-import kotlinx.coroutines.flow.toList
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -46,48 +44,47 @@ class UserController(
         }
 
     @GetMapping
-    suspend fun getUsers() =
+    fun getUsers() =
         either {
-            val users = userService.getUsers().mapError().bind()
+            val users = userService.getUsers().bind()
             users.toList().produce()
         }.handle()
 
     @GetMapping("/{id}")
-    suspend fun getUserById(
+    fun getUserById(
         @PathVariable id: String,
     ) = either {
         val uuid = id.validate().bind()
-        val user = userService.getUserById(User.Id.Valid(uuid)).mapError().bind()
+        val user = userService.getUserById(User.Id.Valid(uuid)).bind()
         user.produce()
     }.handle()
 
     @PostMapping
-    suspend fun postUser(
+    fun postUser(
         @RequestBody potentialUser: PotentialUserDto,
     ) = either {
         val user = potentialUser.validate().bind()
-        val savedUser = userService.saveUser(user).mapError().bind()
+        val savedUser = userService.saveUser(user).bind()
         with(UserProducer) { savedUser.produce() }
     }.handle()
 
     @DeleteMapping("/{id}")
-    suspend fun deleteUserById(
+    fun deleteUserById(
         @PathVariable id: String,
     ) = either {
         val uuid = id.validate().bind()
-        val user = userService.deleteUserById(User.Id.Valid(uuid)).mapError().bind()
+        val user = userService.deleteUserById(User.Id.Valid(uuid)).bind()
         user.produce()
     }.handle()
+
+    private fun <R> Either<Error, R>.handle() = mapError().getOrElse { throw it }
 
     private fun <R> Either<Error, R>.mapError() =
         mapLeft {
             when (it) {
                 is TechnicalError -> TechnicalException(cause = it.cause, message = it.message)
-                is ValidationError -> ValidationException(errors = listOf(it))
-                is ValidationErrors -> ValidationException(errors = it.errors)
+                is ValidationError -> ValidationException(errors = it.errors)
                 is DomainError -> DomainException(error = it)
             }
         }
-
-    private fun <R> Either<AppException, R>.handle() = getOrElse { throw it }
 }

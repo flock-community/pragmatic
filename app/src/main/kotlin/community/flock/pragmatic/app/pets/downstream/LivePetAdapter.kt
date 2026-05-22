@@ -1,7 +1,7 @@
 package community.flock.pragmatic.app.pets.downstream
 
-import community.flock.pragmatic.app.common.Externalizer
-import community.flock.pragmatic.app.common.Internalizer
+import community.flock.pragmatic.app.common.downstream.Externalizer
+import community.flock.pragmatic.app.common.downstream.Internalizer
 import community.flock.pragmatic.app.pets.downstream.PetExternalizer.externalize
 import community.flock.pragmatic.app.pets.downstream.PetInternalizer.internalize
 import community.flock.pragmatic.app.wirespec.PetstoreClient

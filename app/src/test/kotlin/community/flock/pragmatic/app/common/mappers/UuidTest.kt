@@ -1,17 +1,12 @@
 package community.flock.pragmatic.app.common.mappers
 
-import community.flock.pragmatic.app.common.mappers.UUIDConsumer.consume
-import community.flock.pragmatic.app.common.mappers.UUIDExternalizer.externalize
-import community.flock.pragmatic.app.common.mappers.UUIDInternalizer.internalize
-import community.flock.pragmatic.app.common.mappers.UUIDProducer.produce
-import community.flock.pragmatic.app.exceptions.TechnicalException
-import community.flock.pragmatic.app.exceptions.ValidationException
-import community.flock.pragmatic.domain.error.ValidationError.UUIDError
+import community.flock.pragmatic.app.user.web.UUIDTransformer.consume
+import community.flock.pragmatic.app.user.web.UUIDTransformer.produce
+import community.flock.pragmatic.domain.error.UUIDError
 import io.kotest.assertions.arrow.core.shouldBeLeft
 import io.kotest.assertions.arrow.core.shouldBeRight
 import io.kotest.assertions.arrow.core.shouldContain
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.types.shouldBeInstanceOf
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -43,35 +38,6 @@ class UuidTest {
             "wrong"
                 .consume()
                 .shouldBeLeft() shouldContain UUIDError
-        }
-    }
-
-    @Nested
-    @DisplayName("With Externalizer: externalize ")
-    inner class Externalizer {
-        @Test
-        fun `correct uuid`() {
-            uuid.externalize() shouldBe uuidString
-        }
-    }
-
-    @Nested
-    @DisplayName("With Internalizer: internalize ")
-    inner class Internalizer {
-        @Test
-        fun `correct uuid string`() {
-            uuidString.internalize() shouldBeRight uuid
-        }
-
-        @Test
-        fun `incorrect uuid string`() {
-            "wrong"
-                .internalize()
-                .shouldBeLeft()
-                .shouldBeInstanceOf<TechnicalException>()
-                .cause
-                .shouldBeInstanceOf<ValidationException>()
-                .message shouldBe "Not a valid UUID"
         }
     }
 }
