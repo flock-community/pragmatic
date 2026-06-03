@@ -12,7 +12,7 @@ import community.flock.pragmatic.domain.user.model.LastName
 import community.flock.pragmatic.domain.user.model.User
 import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
 
-object UserConverter : Verifier<UserEntity, User<User.Id.Valid>>, Externalizer<User<User.Id.NonExisting>, UserEntity> {
+object UserConverter : Verifier<UserEntity, User<User.Id.Valid>>, Externalizer<User<User.Id.Absent>, UserEntity> {
     override fun UserEntity.internalize(): EitherNel<SingleValidationError, User<User.Id.Valid>> =
         either {
             zipOrAccumulate(
@@ -24,7 +24,7 @@ object UserConverter : Verifier<UserEntity, User<User.Id.Valid>>, Externalizer<U
             )
         }
 
-    override fun User<User.Id.NonExisting>.externalize(): UserEntity =
+    override fun User<User.Id.Absent>.externalize(): UserEntity =
         UserEntity.new {
             firstName = this@externalize.firstName.value
             lastName = this@externalize.lastName.value

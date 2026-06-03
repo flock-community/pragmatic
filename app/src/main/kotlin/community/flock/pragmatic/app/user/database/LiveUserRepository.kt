@@ -14,6 +14,7 @@ import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.springframework.core.env.Environment
 import org.springframework.stereotype.Component
+import org.springframework.stereotype.Repository
 
 @Component
 class ExposedDatabase(
@@ -42,7 +43,7 @@ fun <D : DomainError, E : Error, T : Any> Database.handle(
     ensureNotNull(maybe) { domainError }
 }
 
-@Component
+@Repository
 class LiveUserRepository(
     private val db: ExposedDatabase,
 ) : UserRepository {
@@ -56,7 +57,7 @@ class LiveUserRepository(
             UserEntity.findById(userId.value)?.verify()
         }
 
-    override fun save(user: User<User.Id.NonExisting>): Either<Error, User<User.Id.Valid>> =
+    override fun save(user: User<User.Id.Absent>): Either<Error, User<User.Id.Valid>> =
         db.postgres.handle {
             user.externalize().verify()
         }

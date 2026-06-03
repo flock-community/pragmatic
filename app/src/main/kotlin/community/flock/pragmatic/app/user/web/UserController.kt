@@ -1,90 +1,77 @@
 package community.flock.pragmatic.app.user.web
 
-import arrow.core.Either
-import arrow.core.getOrElse
+import arrow.core.raise.Raise
 import arrow.core.raise.either
-import community.flock.pragmatic.api.wirespec.model.PotentialUserDto
-import community.flock.pragmatic.app.common.exceptions.DomainException
-import community.flock.pragmatic.app.common.exceptions.TechnicalException
-import community.flock.pragmatic.app.common.exceptions.ValidationException
+import community.flock.pragmatic.api.wirespec.endpoint.DeleteUser
+import community.flock.pragmatic.api.wirespec.endpoint.GetUserById
+import community.flock.pragmatic.api.wirespec.endpoint.GetUsers
+import community.flock.pragmatic.api.wirespec.endpoint.PostUser
+import community.flock.pragmatic.api.wirespec.model.ErrorDto
 import community.flock.pragmatic.app.user.web.UUIDTransformer.validate
 import community.flock.pragmatic.app.user.web.UserConsumer.validate
 import community.flock.pragmatic.app.user.web.UserProducer.produce
 import community.flock.pragmatic.app.user.web.UsersProducer.produce
-import community.flock.pragmatic.domain.error.DomainError
 import community.flock.pragmatic.domain.error.Error
-import community.flock.pragmatic.domain.error.TechnicalError
-import community.flock.pragmatic.domain.error.ValidationError
-import community.flock.pragmatic.domain.error.errors
-import community.flock.pragmatic.domain.user.HasUserRepository
-import community.flock.pragmatic.domain.user.UserService
+import community.flock.pragmatic.domain.user.HasUserService
 import community.flock.pragmatic.domain.user.deleteUserById
 import community.flock.pragmatic.domain.user.getUserById
 import community.flock.pragmatic.domain.user.getUsers
 import community.flock.pragmatic.domain.user.model.User
 import community.flock.pragmatic.domain.user.saveUser
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-interface UserControllerDependencies : HasUserRepository
+interface UserControllerDependencies : HasUserService
+
+interface UserApi :
+    GetUsers.Handler,
+    GetUserById.Handler,
+    PostUser.Handler,
+    DeleteUser.Handler
 
 @RestController
-@RequestMapping("/api/users")
 class UserController(
-    appLayer: UserControllerDependencies,
-) {
-    private val userService =
-        object : UserService {
-            override val userRepository = appLayer.userRepository
-        }
+    private val ctx: UserControllerDependencies,
+) : UserApi {
+    override suspend fun getUsers(request: GetUsers.Request): GetUsers.Response<*> =
+        handle {
+            ctx.userService
+                .getUsers()
+                .bind()
+                .produce()
+        }.fold(GetUsers::Response500, GetUsers::Response200)
 
-    @GetMapping
-    suspend fun getUsers() =
-        either {
-            val users = userService.getUsers().bind()
-            users.toList().produce()
-        }.handle()
+    override suspend fun getUserById(request: GetUserById.Request): GetUserById.Response<*> =
+        handle {
+            val id =
+                request.path.id.value
+                    .validate()
+                    .bind()
+            ctx.userService
+                .getUserById(User.Id.Valid(id))
+                .bind()
+                .produce()
+        }.fold(GetUserById::Response500, GetUserById::Response200)
 
-    @GetMapping("/{id}")
-    suspend fun getUserById(
-        @PathVariable id: String,
-    ) = either {
-        val uuid = id.validate().bind()
-        val user = userService.getUserById(User.Id.Valid(uuid)).bind()
-        user.produce()
-    }.handle()
+    override suspend fun postUser(request: PostUser.Request): PostUser.Response<*> =
+        handle {
+            val user = request.body.validate().bind()
+            ctx.userService
+                .saveUser(user)
+                .bind()
+                .produce()
+        }.fold(PostUser::Response500, PostUser::Response200)
 
-    @PostMapping
-    suspend fun postUser(
-        @RequestBody potentialUser: PotentialUserDto,
-    ) = either {
-        val user = potentialUser.validate().bind()
-        val savedUser = userService.saveUser(user).bind()
-        with(UserProducer) { savedUser.produce() }
-    }.handle()
-
-    @DeleteMapping("/{id}")
-    suspend fun deleteUserById(
-        @PathVariable id: String,
-    ) = either {
-        val uuid = id.validate().bind()
-        val user = userService.deleteUserById(User.Id.Valid(uuid)).bind()
-        user.produce()
-    }.handle()
-
-    private fun <R> Either<Error, R>.handle() = mapError().getOrElse { throw it }
-
-    private fun <R> Either<Error, R>.mapError() =
-        mapLeft {
-            when (it) {
-                is TechnicalError -> TechnicalException(cause = it.cause, message = it.message)
-                is ValidationError -> ValidationException(errors = it.errors)
-                is DomainError -> DomainException(error = it)
-            }
-        }
+    override suspend fun deleteUser(request: DeleteUser.Request): DeleteUser.Response<*> =
+        handle {
+            val uuid =
+                request.path.id.value
+                    .validate()
+                    .bind()
+            ctx.userService
+                .deleteUserById(User.Id.Valid(uuid))
+                .bind()
+                .produce()
+        }.fold(DeleteUser::Response500, DeleteUser::Response200)
 }
+
+private fun <E : Error, A : Any> handle(block: Raise<E>.() -> A) = either { block() }.mapLeft { ErrorDto(it.message) }

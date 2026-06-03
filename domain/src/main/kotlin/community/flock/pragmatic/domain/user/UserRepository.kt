@@ -10,7 +10,7 @@ interface UserRepository {
 
     fun getById(userId: Id.Valid): Either<Error, User<Id.Valid>>
 
-    fun save(user: User<Id.NonExisting>): Either<Error, User<Id.Valid>>
+    fun save(user: User<Id.Absent>): Either<Error, User<Id.Valid>>
 
     fun deleteById(userId: Id.Valid): Either<Error, User<Id.Valid>>
 }

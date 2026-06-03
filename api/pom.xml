@@ -10,12 +10,34 @@
 
     <artifactId>api</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>community.flock.wirespec.plugin.maven</groupId>
                 <artifactId>wirespec-maven-plugin</artifactId>
                 <version>${wirespec.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>community.flock.wirespec.integration</groupId>
+                        <artifactId>spring-jvm</artifactId>
+                        <version>${wirespec.version}</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
                         <id>kotlin</id>
@@ -25,6 +47,7 @@
                         <configuration>
                             <input>${project.basedir}/src/main/wirespec</input>
                             <output>${project.build.directory}/generated-sources/kotlin</output>
+                            <emitterClass>community.flock.wirespec.integration.spring.kotlin.emit.SpringKotlinEmitter</emitterClass>
                             <packageName>community.flock.pragmatic.api.wirespec</packageName>
                             <languages>
                                 <language>Kotlin</language>

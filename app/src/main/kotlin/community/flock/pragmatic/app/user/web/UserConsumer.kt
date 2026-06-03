@@ -10,11 +10,11 @@ import community.flock.pragmatic.domain.user.model.LastName
 import community.flock.pragmatic.domain.user.model.User
 import community.flock.pragmatic.domain.user.model.User.Id
 
-object UserConsumer : Validator<PotentialUserDto, User<Id.NonExisting>> {
+object UserConsumer : Validator<PotentialUserDto, User<Id.Absent>> {
     override fun PotentialUserDto.consume() =
         either {
             zipOrAccumulate(
-                { Id.NonExisting },
+                { Id.Absent },
                 { FirstName(firstName).bind() },
                 { LastName(lastName).bind() },
                 { BirthDay(birthDate).bind() },

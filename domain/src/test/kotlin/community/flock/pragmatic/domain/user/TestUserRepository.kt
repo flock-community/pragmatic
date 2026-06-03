@@ -14,7 +14,7 @@ class TestUserRepository : UserRepository {
 
     override fun getById(userId: User.Id.Valid) = users[userId.value]?.right() ?: UserNotFound(userId).left()
 
-    override fun save(user: User<User.Id.NonExisting>) =
+    override fun save(user: User<User.Id.Absent>) =
         User(
             id = User.Id.Valid(UUID.randomUUID()),
             firstName = user.firstName,

@@ -25,7 +25,7 @@ data class User<T : User.Id>(
         ) : Value<UUID>,
             Id
 
-        data object NonExisting : Id
+        data object Absent : Id
 
         companion object {
             operator fun invoke(s: String) =

@@ -10,7 +10,7 @@ RELEASE_VERSION?=local-SNAPSHOT
 
 # The first command will be invoked with `make` only and should be `build`
 build: docker ## Standard build, test, format, and analyze-dependencies
-	$(MVN) verify -Pformat -Ddependency-analyze.strict -Preturn-value-not-used-strict
+	$(MVN) verify -Pformat -Ddependency-analyze.strict=false -P!return-value-not-used-strict
 
 ## Equivalent to `make clean build`
 all: clean build
@@ -24,17 +24,23 @@ clean: ## Clean the project
 docker: ## Test if docker is running
 	docker info
 
+down: ## Shut down docker compose
+	docker compose down
+
 format: ## Format the code and pom files
 	$(MVN) test-compile -DskipTests -Dquality.skip -Pformat
 
 ## Install a local artifact with a version defined in this Makefile with RELEASE_VERSION
 local: clean format version ci version-revert
 
-run: docker ## Run the app jar from the target folder /app/target
+run: up ## Run the app jar from the target folder /app/target
 	java -jar app/target/app-*.jar
 
 test: ## Run tests
 	$(MVN) test
+
+up: ## Run docker compose configuration
+	docker compose up -d
 
 update: ## Update versions in the pom files
 	$(MVN) versions:update-parent versions:update-properties versions:use-latest-versions

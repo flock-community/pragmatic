@@ -9,6 +9,10 @@ fun UserService.getUsers() = userRepository.getAll()
 
 fun UserService.getUserById(id: Id.Valid) = userRepository.getById(id)
 
-fun UserService.saveUser(user: User<Id.NonExisting>) = userRepository.save(user)
+fun UserService.saveUser(user: User<Id.Absent>) = userRepository.save(user)
 
 fun UserService.deleteUserById(id: Id.Valid) = userRepository.deleteById(id)
+
+interface HasUserService {
+    val userService: UserService
+}
