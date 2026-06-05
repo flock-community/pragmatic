@@ -49,7 +49,7 @@ class UserControllerTest {
                 is GetUsers.Response500 -> fail("Unexpected response: ${response.body}")
             }.first().shouldNotBeNull {
                 firstName shouldBe "FirstName"
-                lastName shouldBe "LastName"
+                LastName shouldBe "LastName"
             }
         }
 }

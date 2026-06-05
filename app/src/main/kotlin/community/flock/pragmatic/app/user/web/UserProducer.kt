@@ -20,7 +20,7 @@ object UserProducer : Producer<User<Id.Valid>, UserDto> {
         UserDto(
             id = UserIdentifier(id.value.produce()),
             firstName = firstName.value,
-            lastName = lastName.value,
-            birthDate = birthDay.value.format(ISO_LOCAL_DATE),
+            LastName = lastName.value,
+            `birth-date` = birthDay.value.format(ISO_LOCAL_DATE),
         )
 }

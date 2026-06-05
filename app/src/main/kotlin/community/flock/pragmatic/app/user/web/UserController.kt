@@ -8,7 +8,6 @@ import community.flock.pragmatic.api.wirespec.endpoint.GetUsers
 import community.flock.pragmatic.api.wirespec.endpoint.PostUser
 import community.flock.pragmatic.api.wirespec.model.ErrorDto
 import community.flock.pragmatic.app.user.web.UUIDTransformer.validate
-import community.flock.pragmatic.app.user.web.UserConsumer.validate
 import community.flock.pragmatic.app.user.web.UserProducer.produce
 import community.flock.pragmatic.app.user.web.UsersProducer.produce
 import community.flock.pragmatic.domain.error.Error
@@ -19,6 +18,7 @@ import community.flock.pragmatic.domain.user.getUsers
 import community.flock.pragmatic.domain.user.model.User
 import community.flock.pragmatic.domain.user.saveUser
 import org.springframework.web.bind.annotation.RestController
+import community.flock.pragmatic.app.user.web.UserConsumer.validate as validatePotentialUser
 
 interface UserControllerDependencies : HasUserService
 
@@ -54,7 +54,7 @@ class UserController(
 
     override suspend fun postUser(request: PostUser.Request): PostUser.Response<*> =
         handle {
-            val user = request.body.validate().bind()
+            val user = request.body.validatePotentialUser().bind()
             ctx.userService
                 .saveUser(user)
                 .bind()

@@ -16,8 +16,8 @@ Content-Type: application/json
 
 {
   "firstName": "FirstName",
-  "lastName": "LastName",
-  "birthDate":  "2020-02-02"
+  "LastName": "LastName",
+  "birth-date":  "2020-02-02"
 }
 
 ###

@@ -2,15 +2,15 @@ type UserIdentifier = String(/^[0-9a-f]{8}\b-[0-9a-f]{4}\b-[0-9a-f]{4}\b-[0-9a-f
 
 type PotentialUserDto {
     firstName: String,
-    lastName: String,
-    birthDate: String
+    `LastName`: String,
+    birth-date: String
 }
 
 type UserDto {
     id : UserIdentifier,
     firstName: String,
-    lastName: String,
-    birthDate: String
+    `LastName`: String,
+    birth-date: String
 }
 
 type ErrorDto {

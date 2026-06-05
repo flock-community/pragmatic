@@ -16,8 +16,8 @@ object UserConsumer : Validator<PotentialUserDto, User<Id.Absent>> {
             zipOrAccumulate(
                 { Id.Absent },
                 { FirstName(firstName).bind() },
-                { LastName(lastName).bind() },
-                { BirthDay(birthDate).bind() },
+                { LastName(LastName).bind() },
+                { BirthDay(`birth-date`).bind() },
                 ::User,
             )
         }

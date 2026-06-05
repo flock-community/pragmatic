@@ -2,7 +2,6 @@ package community.flock.pragmatic.app.user.database
 
 import community.flock.pragmatic.api.wirespec.model.PotentialUserDto
 import community.flock.pragmatic.app.environment.WithPostgresContainer
-import community.flock.pragmatic.app.user.web.UserConsumer.validate
 import community.flock.pragmatic.domain.user.model.User
 import io.kotest.assertions.arrow.core.shouldBeRight
 import io.kotest.matchers.collections.shouldHaveSize
@@ -13,6 +12,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.testcontainers.junit.jupiter.Testcontainers
+import community.flock.pragmatic.app.user.web.UserConsumer.validate as validatePotentialUser
 
 @SpringBootTest
 @Testcontainers(disabledWithoutDocker = true)
@@ -36,9 +36,9 @@ class LiveUserRepositoryTest : WithPostgresContainer {
             val user =
                 PotentialUserDto(
                     firstName = "FirstName",
-                    lastName = "LastName",
-                    birthDate = "2020-01-01",
-                ).validate().shouldBeRight()
+                    LastName = "LastName",
+                    `birth-date` = "2020-01-01",
+                ).validatePotentialUser().shouldBeRight()
             userRepository.save(user)
             userRepository
                 .getAll()
